@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bien Servido</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+/* Concepto: carta digital cálida tipo fast-casual. Fondo crema, tarjetas blancas, terracota para acción, verde palta para lo nutricional, mostaza para destacados. */
+:root{
+  --bg:#FAF7F2; --surface:#FFFFFF; --surface2:#F4EEE5; --fg:#1F2421; --muted:#6A6258; --line:#EDE6DC;
+  --pri:#E85D2A; --pri-h:#D14B1A; --pri-fg:#FFFFFF; --pri-soft:#FDE9DF;
+  --grn:#2D6A4F; --grn-soft:#DDEFE5; --mos:#E9C46A; --mos-soft:#FBF0CF; --mos-fg:#7A5A0A; --danger:#B3321F;
+  --prot:#3b82f6; --carb:#2D6A4F; --fat:#E9A23B; --shadow:0 10px 28px rgba(120,80,40,.14); --ing-bg:#FFF4E6;
+  --font-display:'Bricolage Grotesque','Inter',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171310; --surface:#221C17; --surface2:#2C241D; --fg:#F4EEE5; --muted:#B3A798; --line:#3A3027;
+  --pri:#F06A38; --pri-h:#FF7F52; --pri-fg:#1A0C05; --pri-soft:#47261A;
+  --grn:#6CC49A; --grn-soft:#1D3A2E; --mos:#E9C46A; --mos-soft:#3F3414; --mos-fg:#EBCB7C; --danger:#FF8A78;
+  --prot:#6ea8fe; --carb:#6CC49A; --fat:#F0B452; --shadow:0 10px 28px rgba(0,0,0,.45); --ing-bg:#F3E7D6; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#171310; --surface:#221C17; --surface2:#2C241D; --fg:#F4EEE5; --muted:#B3A798; --line:#3A3027;
+  --pri:#F06A38; --pri-h:#FF7F52; --pri-fg:#1A0C05; --pri-soft:#47261A;
+  --grn:#6CC49A; --grn-soft:#1D3A2E; --mos:#E9C46A; --mos-soft:#3F3414; --mos-fg:#EBCB7C; --danger:#FF8A78;
+  --prot:#6ea8fe; --carb:#6CC49A; --fat:#F0B452; --shadow:0 10px 28px rgba(0,0,0,.45); --ing-bg:#F3E7D6; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--surface)}
+h1,h2,h3,.display{font-family:var(--font-display);text-wrap:balance;letter-spacing:-0.01em}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.dish{transition:box-shadow .2s,transform .2s}
+.dish:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.soft{background:var(--surface2);border-radius:12px}
+.lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:10px 16px;font-weight:600;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;transition:background .15s,transform .1s}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-p{background:var(--pri);color:var(--pri-fg);border-color:transparent}
+.btn-p:hover{background:var(--pri-h)}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;background:var(--surface2);color:var(--fg)}
+.chip-g{background:var(--grn-soft);color:var(--grn)}
+.chip-m{background:var(--mos-soft);color:var(--mos-fg)}
+.chip-p{background:var(--pri-soft);color:var(--pri)}
+.sel{border-color:var(--pri)!important;box-shadow:0 0 0 2px var(--pri)}
+.inp{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--fg);font-size:14px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+input[type=range]{width:100%;accent-color:var(--pri);height:24px}
+input[type=checkbox]{accent-color:var(--grn);width:18px;height:18px}
+.tab{white-space:nowrap;border-radius:999px;padding:8px 15px;font-size:14px;font-weight:600;border:1px solid var(--line);color:var(--fg);cursor:pointer;background:var(--surface)}
+.tab:hover{background:var(--surface2)}
+.tab[aria-selected=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.tab-hot{background:var(--mos-soft);border-color:var(--mos)}
+.wrap{max-width:1180px;margin:0 auto}
+.bar{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px;transition:width .25s}
+table{border-collapse:collapse;width:100%}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:700;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:14px}
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(31,20,10,.55)}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes slide{from{transform:translateX(100%)}to{transform:none}}
+.pop{animation:pop .25s ease-out}
+.slide{animation:slide .25s ease-out}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useEffect } = React;
+const S = (n) => 'S/ ' + Number(n).toFixed(2);
+const r0 = (n) => Math.round(n);
+const r1 = (n) => (Math.round(n * 10) / 10).toFixed(1);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+/* ---------- Iconos (trazos estilo Lucide) ---------- */
+const ICONS = {
+  bag: <><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></>,
+  x: <><path d="M18 6 6 18" /><path d="m6 6 12 12" /></>,
+  plus: <><path d="M5 12h14" /><path d="M12 5v14" /></>,
+  minus: <path d="M5 12h14" />,
+  check: <path d="M20 6 9 17l-5-5" />,
+  pin: <><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></>,
+  clock: <><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></>,
+  trash: <><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></>,
+  lock: <><rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></>,
+  calc: <><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><path d="M16 10h.01M12 10h.01M8 10h.01M12 14h.01M8 14h.01M12 18h.01M8 18h.01M16 14v4" /></>,
+  flame: <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z" />,
+  leaf: <><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></>,
+  arrow: <><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></>,
+};
+function Icon({ n, size = 18, className = '' }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>{ICONS[n]}</svg>;
+}
+
+/* ---------- Datos ---------- */
+const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+const gOf = (d) => Math.max(0, (d.k - 4 * d.p - 4 * d.c) / 9);
+const MENU = {
+  criollo: [
+    { n: 'Ají de gallina light', d: 'Pollo deshilachado en cremosa salsa de ají amarillo, con arroz integral y ensalada fresca. Se sirve caliente, como en casa.', k: 720, p: 36, c: 88, f: 10 },
+    { n: 'Seco de pollo con frejoles', d: 'Pollo jugoso en seco de culantro, frejoles canarios suaves y arroz integral graneado.', k: 760, p: 38, c: 94, f: 12 },
+    { n: 'Lomo saltado al wok', d: 'Res magra salteada al wok con cebolla, tomate y ají, papas doradas al horno y arroz integral.', k: 750, p: 37, c: 90, f: 9 },
+    { n: 'Pollo al horno con puré de camote', d: 'Pollo al horno aromático, puré de camote sedoso y ensalada fresca de la casa.', k: 690, p: 35, c: 86, f: 10 },
+    { n: 'Arroz con pollo integral', d: 'Arroz integral al culantro con pollo tierno, verduras salteadas y ensalada fresca.', k: 730, p: 34, c: 92, f: 11 },
+  ],
+  bowl: [
+    { n: 'Bowl Andino', sub: 'Quinua, pollo a la plancha, palta, verduras y lentejas', d: 'Quinua esponjosa, pollo a la plancha, palta cremosa, verduras frescas y lentejas.', k: 710, p: 38, c: 84, f: 13, base: 'quinua', rm: ['palta', 'lentejas', 'cebolla', 'tomate'] },
+    { n: 'Bowl Marino', sub: 'Arroz integral, filete de pescado, verduras y garbanzos', d: 'Arroz integral, filete de pescado jugoso, verduras al vapor y garbanzos.', k: 680, p: 35, c: 82, f: 12, base: 'arroz', rm: ['garbanzos', 'brocoli', 'cebolla', 'zanahoria'] },
+    { n: 'Bowl Criollo', sub: 'Quinua, carne magra saltada, verduras y choclo', d: 'Quinua, carne magra saltada con sabor criollo, verduras frescas y choclo tierno.', k: 740, p: 39, c: 90, f: 12, base: 'quinua', rm: ['choclo', 'cebolla', 'tomate', 'zanahoria'] },
+    { n: 'Bowl Clásico', sub: 'Arroz integral, pollo al horno, verduras y frejoles', d: 'Arroz integral, pollo al horno dorado, verduras frescas y frejoles.', k: 720, p: 37, c: 88, f: 11, base: 'arroz', rm: ['frejoles', 'cebolla', 'tomate', 'zanahoria'] },
+    { n: 'Bowl Fresco', sub: 'Quinua, pescado, palta y lentejas', d: 'Quinua, pescado al vapor, palta fresca y lentejas.', k: 695, p: 36, c: 80, f: 11, base: 'quinua', rm: ['palta', 'lentejas', 'tomate', 'cebolla'] },
+  ],
+  veg: [
+    { n: 'Tacu tacu de menestras al horno', d: 'Tacu tacu crocante por fuera y suave por dentro, con ensalada criolla.', k: 680, p: 31, c: 90, f: 15, rm: ['cebolla', 'tomate'] },
+    { n: 'Tallarín integral al pesto ligero', d: 'Tallarín integral con pesto ligero de albahaca, frejoles y verduras.', k: 710, p: 32, c: 92, f: 13, rm: ['frejoles', 'brocoli', 'zanahoria', 'tomate'] },
+    { n: 'Saltado de tofu dorado', d: 'Tofu dorado salteado con verduras y papa sancochada.', k: 660, p: 30, c: 80, f: 10, rm: ['papa', 'cebolla', 'tomate', 'zanahoria'] },
+    { n: 'Guiso casero de garbanzos', d: 'Guiso casero de garbanzos con camote al horno y huevo.', k: 700, p: 33, c: 86, f: 14, rm: ['camote', 'huevo', 'cebolla', 'tomate'] },
+    { n: 'Tortilla de verduras con quinua', d: 'Tortilla esponjosa de verduras con quinua y lentejas.', k: 675, p: 32, c: 80, f: 12, rm: ['zanahoria', 'cebolla', 'tomate'] },
+  ],
+};
+const LINES = {
+  criollo: { name: 'Criollo Saludable', tag: 'Sabor casero sin frituras', icon: 'flame' },
+  bowl: { name: 'Bowl Completo', tag: '100% armable', icon: 'leaf' },
+  veg: { name: 'Vegetariano', tag: 'Proteína vegetal completa', icon: 'leaf' },
+};
+const RM = {
+  palta: { n: 'palta', k: 80, p: 1, c: 4, g: 7.4, f: 3.4 }, lentejas: { n: 'lentejas', k: 116, p: 9, c: 20, g: 0.4, f: 8 },
+  garbanzos: { n: 'garbanzos', k: 135, p: 8.5, c: 24, g: 1.2, f: 7.6 }, frejoles: { n: 'frejoles', k: 135, p: 8.5, c: 24, g: 1.2, f: 6 },
+  choclo: { n: 'choclo', k: 90, p: 2.5, c: 19, g: 1, f: 2.4 }, cebolla: { n: 'cebolla', k: 12, p: 0.3, c: 2.8, g: 0, f: 0.5 },
+  tomate: { n: 'tomate', k: 10, p: 0.5, c: 2.2, g: 0.1, f: 0.7 }, zanahoria: { n: 'zanahoria', k: 20, p: 0.5, c: 4.5, g: 0.1, f: 1.4 },
+  brocoli: { n: 'brócoli', k: 25, p: 2, c: 4, g: 0.3, f: 2.5 }, papa: { n: 'papa', k: 87, p: 1.9, c: 20, g: 0.1, f: 1.8 },
+  huevo: { n: 'huevo', k: 78, p: 6.3, c: 0.6, g: 5.3, f: 0 }, camote: { n: 'camote', k: 90, p: 2, c: 20.7, g: 0.1, f: 3 },
+};
+const BASES = {
+  quinua: { n: '100% Quinua', k: 180, p: 6.6, c: 32, g: 2.9, f: 4.2 },
+  arroz: { n: '100% Arroz integral', k: 185, p: 4.1, c: 38.4, g: 1.5, f: 2.7 },
+  mix: { n: 'Mitad quinua / mitad arroz integral', k: 182.5, p: 5.35, c: 35.2, g: 2.2, f: 3.45 },
+};
+const CREAMS = [
+  { n: 'Vinagreta de limón y hierbas', k: 40, p: 0, c: 2, g: 3.5, f: 0 },
+  { n: 'Salsa de yogur y culantro', k: 35, p: 2, c: 3, g: 1.5, f: 0 },
+  { n: 'Ají amarillo ligero', k: 45, p: 0.5, c: 4, g: 3, f: 0.3 },
+  { n: 'Sin crema', k: 0, p: 0, c: 0, g: 0, f: 0 },
+];
+const EX = {
+  palta: { id: 'palta', n: 'Porción extra de palta fresca', price: 2.5, k: 120, p: 1.5, c: 6, g: 11, f: 4.5 },
+  prot: { id: 'prot', n: 'Extra proteína (pollo / carne)', price: 3.5, k: 140, p: 25, c: 0, g: 4, f: 0 },
+  hv: { id: 'hv', n: 'Extra huevo / tofu', price: 3.0, k: 140, p: 14, c: 2, g: 9, f: 0.5 },
+  quinua: { id: 'quinua', n: 'Extra quinua y arroz integral', price: 2.0, k: 110, p: 3, c: 21, g: 1.5, f: 2.5 },
+  alfajor: { id: 'alfajor', n: 'Alfajor proteico artesanal (postre)', price: 4.5, k: 180, p: 12, c: 20, g: 7, f: 2 },
+};
+const EXTRAS_BY_LINE = { criollo: ['bebida', 'palta', 'prot', 'quinua'], bowl: ['bebida', 'palta', 'prot', 'quinua'], veg: ['bebida', 'palta', 'hv', 'quinua'] };
+const BEB = [
+  { n: 'Refresco de Maracuyá con Hierbaluisa', tag: 'Bajo en azúcar', d: 'Refrescante, cítrico y digestivo.', k: 45, c: 11 },
+  { n: 'Infusión Fría de Manzana, Canela y Clavo', tag: 'Sin azúcar añadida', d: 'Dulzor natural de fruta cocida, ideal tras las comidas.', k: 40, c: 10 },
+  { n: 'Refresco de Carambola con Limón', tag: 'Bajo en azúcar', d: 'Ligero, rico en vitamina C y súper hidratante.', k: 35, c: 8.5 },
+  { n: 'Infusión Digestiva de Hierbaluisa, Manzanilla y Anís', tag: 'Sin azúcar añadida', d: 'Clásica y reconfortante para una digestión ligera entre clases.', k: 15, c: 3.5 },
+  { n: 'Chicha Morada de Maíz Morado (receta baja en azúcar)', tag: 'Bajo en azúcar', d: 'La bebida peruana de siempre: maíz morado, piña, canela y clavo, antioxidante y con poco dulce para cerrar la semana.', k: 40, c: 10 },
+];
+const BEB_PRICE = 1.5;
+const exOf = (id, day) => (id === 'bebida' ? { id, n: 'Bebida del Día: ' + BEB[day].n, price: BEB_PRICE, k: BEB[day].k, p: 0, c: BEB[day].c, g: 0, f: 0 } : EX[id]);
+const SNACKS = [
+  { id: 's1', line: 'snack', n: 'Wrap Integral Crocante de Pollo, Palta y Queso Fresco Light', d: 'Tortilla integral dorada a la plancha rellena de pollo jugoso, láminas cremosas de palta, tomate fresco y salsa de yogur con culantro.', price: 7.5, k: 310, p: 24, c: 26, f: 4.5 },
+  { id: 's2', line: 'snack', n: 'Tostón de Masa Madre con Palta, Huevo Pochado y Semillas', d: 'Pan rústico tostado con guacamole recién hecho, huevo cocido a punto tierno, tomates cherry y un toque de ajonjolí.', price: 7.0, k: 295, p: 15, c: 28, f: 5.5 },
+  { id: 's3', line: 'snack', n: 'Copa Parfait de Yogur Griego, Granola y Frutos Rojos', d: 'Capas de yogur griego natural espeso, granola crocante de avena con miel de abeja, fresas frescas y arándanos.', price: 6.5, k: 240, p: 14, c: 27, f: 3 },
+];
+const POSTRES = [
+  { id: 'p1', line: 'postre', n: 'Alfajor Proteico Artesanal de Avena y Manjar Light', d: 'Galletas suaves de avena y almendras con abundante manjar bajo en azúcar enriquecido con proteína y coco rallado.', price: 4.5, k: 180, p: 12, c: 20, f: 2, star: true, tags: ['Producto estrella'] },
+  { id: 'p2', line: 'postre', n: 'Brownie Fudge Fit de Cacao 70% y Camote', d: 'Cuadrado húmedo e intenso en chocolate oscuro, sin harinas refinadas, endulzado con panela y nueces pecanas crocantes.', price: 5.0, k: 190, p: 6, c: 22, f: 3.5, tags: ['Sin harinas refinadas'] },
+  { id: 'p3', line: 'postre', n: 'Cheesecake Saludable en Vaso de Maracuyá', d: 'Crema suave y sedosa de queso crema light con yogur griego sobre base horneada de avena, coronada con jalea natural de maracuyá.', price: 6.0, k: 210, p: 11, c: 24, f: 1.5, tags: ['Bajo en azúcar'] },
+];
+const lineName = (l) => (LINES[l] ? LINES[l].name : { custom: 'Personalizado', snack: 'Snack saludable', postre: 'Postre saludable', bebida: 'Bebida del Día' }[l]);
+const ING = {
+  pollo: { id: 'pollo', n: 'Pechuga de pollo a la plancha', cat: 'prot', k: 165, p: 31, c: 0, g: 3.6, rate: 3.5 },
+  pescado: { id: 'pescado', n: 'Filete de pescado al vapor', cat: 'prot', k: 128, p: 26, c: 0, g: 2.7, rate: 4.0 },
+  res: { id: 'res', n: 'Carne de res magra saltada', cat: 'prot', k: 187, p: 27, c: 0, g: 8.5, rate: 4.2 },
+  tofu: { id: 'tofu', n: 'Tofu salteado', cat: 'prot', k: 144, p: 15, c: 3.5, g: 8, rate: 3.0 },
+  huevo: { id: 'huevo', n: 'Huevo entero cocido', cat: 'prot', k: 155, p: 12.6, c: 1.1, g: 10.6, rate: 2.5 },
+  quinua: { id: 'quinua', n: 'Quinua cocida', cat: 'carb', k: 120, p: 4.4, c: 21.3, g: 1.9, rate: 2.0 },
+  arroz: { id: 'arroz', n: 'Arroz integral cocido', cat: 'carb', k: 123, p: 2.7, c: 25.6, g: 1, rate: 1.0 },
+  camote: { id: 'camote', n: 'Camote al horno', cat: 'carb', k: 90, p: 2, c: 20.7, g: 0.1, rate: 0.8 },
+  papa: { id: 'papa', n: 'Papa sancochada', cat: 'carb', k: 87, p: 1.9, c: 20.1, g: 0.1, rate: 0.7 },
+  lentejas: { id: 'lentejas', n: 'Lentejas cocidas', cat: 'carb', k: 116, p: 9, c: 20.1, g: 0.4, rate: 1.2 },
+  frejoles: { id: 'frejoles', n: 'Frejoles', cat: 'carb', k: 135, p: 8.5, c: 24, g: 1.2, rate: 1.2 },
+  mix: { id: 'mix', n: 'Mix de ensalada y verduras al vapor', cat: 'veg', k: 35, p: 1.8, c: 7, g: 0.2, rate: 0.8 },
+  palta: { id: 'palta', n: 'Palta / Aguacate', cat: 'veg', k: 160, p: 2, c: 8.5, g: 14.7, rate: 3.0 },
+  aceite: { id: 'aceite', n: 'Aceite de oliva / aliño ligero', cat: 'veg', k: 884, p: 0, c: 0, g: 100, rate: 1.0 },
+};
+const CATS = { prot: { name: 'Proteínas', std: 120 }, carb: { name: 'Carbohidratos y menestras', std: 250 }, veg: { name: 'Verduras y grasas saludables', std: 200 } };
+const ACTIVITY = [['Sedentario', 1.2, '1.20'], ['Ligeramente activo', 1.375, '1.375'], ['Moderadamente activo', 1.55, '1.55'], ['Muy activo', 1.725, '1.725'], ['Atleta / Extremo', 1.9, '1.90']];
+const MACROS = { eq: { name: 'Equilibrado', p: 25, c: 45, g: 30 }, hip: { name: 'Hipertrofia', p: 25, c: 50, g: 25 }, def: { name: 'Definición', p: 35, c: 35, g: 30 }, rend: { name: 'Rendimiento', p: 20, c: 55, g: 25 } };
+const MODES = {
+  anticipado: { name: 'Pedido anticipado', price: 13.9, sub: 'Hasta las 9:00 p.m. del día anterior', unit: 'por plato', badge: 'Recomendado' },
+  plan: { name: 'Plan semanal', price: 13.0, sub: '5 almuerzos por S/ 65.00 en total', unit: 'por plato', badge: 'Ahorra S/ 4.50' },
+  mismo: { name: 'Pedido del mismo día', price: 14.9, sub: 'Stock limitado en vivo', unit: 'por plato', badge: '' },
+};
+const hhmm = (mins) => { const h = Math.floor(mins / 60), mm = String(mins % 60).padStart(2, '0'); return `${h % 12 === 0 ? 12 : h % 12}:${mm} ${h < 12 ? 'a.m.' : 'p.m.'}`; };
+const SLOTS = Array.from({ length: 14 }, (_, i) => `${hhmm(660 + i * 30)} – ${hhmm(690 + i * 30)}`);
+const zero = () => ({ k: 0, p: 0, c: 0, g: 0, f: 0 });
+const addN = (a, b, m = 1) => ({ k: a.k + b.k * m, p: a.p + b.p * m, c: a.c + b.c * m, g: a.g + b.g * m, f: a.f + b.f * m });
+
+/* Calcula nutrición, precio extra y notas de un plato configurado */
+function configure(line, idx, cfg) {
+  const d = MENU[line][idx];
+  let n = { k: d.k, p: d.p, c: d.c, g: gOf(d), f: d.f };
+  const notes = []; let extraCost = 0;
+  if (line === 'bowl') {
+    n = addN(n, BASES[cfg.base], 1); n = addN(n, BASES[d.base], -1);
+    if (cfg.base !== d.base) notes.push('Base: ' + BASES[cfg.base].n);
+  }
+  if (line !== 'criollo') {
+    n = addN(n, CREAMS[cfg.cream], 1); n = addN(n, CREAMS[0], -1);
+    notes.push(cfg.cream === 3 ? 'Sin crema' : 'Crema: ' + CREAMS[cfg.cream].n);
+    Object.keys(cfg.removed).filter((k) => cfg.removed[k]).forEach((k) => { n = addN(n, RM[k], -1); notes.push('Sin ' + RM[k].n); });
+  }
+  EXTRAS_BY_LINE[line].forEach((id) => {
+    const q = cfg.extras[id] || 0; if (!q) return;
+    const e = exOf(id, idx);
+    n = addN(n, e, q); extraCost += e.price * q;
+    notes.push(`+ ${e.n}${q > 1 ? ' ×' + q : ''} (${S(e.price * q)})`);
+  });
+  Object.keys(n).forEach((k) => { n[k] = Math.max(0, n[k]); });
+  return { n, notes, extraCost };
+}
+
+/* ---------- Componentes auxiliares ---------- */
+/* ---------- Mini ilustraciones de ingredientes (viewBox 48×48) ---------- */
+const SUN = (n, R) => Array.from({ length: n }, (_, i) => { const r = R * Math.sqrt((i + 0.5) / n), a = i * 2.39996; return [24 + r * Math.cos(a), 24 + r * Math.sin(a)]; });
+const grains = (fill, stroke) => <g fill={fill} stroke={stroke} strokeWidth=".8">{[[15, 17, 20], [25, 13, -30], [34, 19, 40], [19, 26, -10], [29, 26, 15], [24, 35, 60], [13, 33, 30], [35, 31, -40], [22, 20, 80], [31, 37, 10]].map(([x, y, r], i) => <ellipse key={i} cx={x} cy={y} rx="4.6" ry="2" transform={`rotate(${r} ${x} ${y})`} />)}</g>;
+const dots = (n, R, r, fill, stroke) => <g fill={fill} stroke={stroke} strokeWidth=".6">{SUN(n, R).map(([x, y], i) => <circle key={i} cx={x} cy={y} r={r} />)}</g>;
+const ramekin = (fill, extra) => <><circle cx="24" cy="24" r="17" fill="#FFFFFF" stroke="#D9CDBA" strokeWidth="2" /><circle cx="24" cy="24" r="12.5" fill={fill} />{extra}</>;
+const spots = (pts, r, fill) => <g fill={fill}>{pts.map(([x, y], i) => <circle key={i} cx={x} cy={y} r={r} />)}</g>;
+const ART = {
+  arroz: grains('#FBF8F1', '#CDBFA6'),
+  arrozverde: grains('#B5CC74', '#6E8F3A'),
+  quinua: dots(30, 15, 2.1, '#EEDFBD', '#C2AA7A'),
+  lentejas: dots(26, 15, 2.6, '#9A6234', '#6E4220'),
+  garbanzos: dots(9, 12, 5, '#E6C27F', '#B88A45'),
+  frejoles: <g fill="#EED9A0" stroke="#BF9B52" strokeWidth=".8">{[[16, 17, 20], [29, 15, -20], [20, 28, 60], [32, 27, 10], [24, 36, -30], [13, 33, 30], [35, 37, 70]].map(([x, y, r], i) => <ellipse key={i} cx={x} cy={y} rx="5.2" ry="3.4" transform={`rotate(${r} ${x} ${y})`} />)}</g>,
+  pollo: <><path d="M9 26c0-9 9-14 18-12 8 2 12 9 10 15-2 7-11 10-19 8-6-1-9-5-9-11z" fill="#D9A04E" stroke="#A8692C" strokeWidth="1" /><path d="M15 19l13 15M21 15l13 15" stroke="#9C5E25" strokeWidth="2.2" strokeLinecap="round" opacity=".7" /></>,
+  res: <g>{[[12, 12, 5], [12, 21, -5], [12, 30, 8]].map(([x, y, r], i) => <rect key={i} x={x} y={y} width="24" height="7" rx="3.5" fill="#7A3B22" stroke="#A9603E" strokeWidth="1.2" transform={`rotate(${r} 24 ${y + 3})`} />)}</g>,
+  pescado: <><path d="M7 25c7-11 24-13 34-4-8 10-25 11-34 4z" fill="#F4E6D6" stroke="#D2B497" strokeWidth="1.2" /><path d="M16 20q3 5 0 10M23 18q3 6 0 13M30 19q3 5 0 11" stroke="#DCC3A7" strokeWidth="1.2" fill="none" /></>,
+  tofu: <g>{[[9, 22], [22, 12], [24, 27]].map(([x, y], i) => <g key={i}><rect x={x} y={y} width="14" height="13" rx="2" fill="#F5E7C6" stroke="#CDB07A" /><rect x={x} y={y} width="14" height="4" rx="2" fill="#E5BE6E" /></g>)}</g>,
+  huevo: <><ellipse cx="24" cy="25" rx="15" ry="12" fill="#FFFFFF" stroke="#E2D8C6" strokeWidth="1.2" /><circle cx="24" cy="25" r="6.5" fill="#F4B731" /></>,
+  palta: <><ellipse cx="24" cy="24" rx="13" ry="17" fill="#3E6B2A" /><ellipse cx="24" cy="25" rx="10.5" ry="14" fill="#CFE38A" /><circle cx="24" cy="29" r="5.5" fill="#8A5A2B" /></>,
+  choclo: <><path d="M14 40c-2-8 2-14 6-16l-2 18z" fill="#7BAE4A" /><rect x="17" y="7" width="14" height="33" rx="7" fill="#F2C94C" stroke="#D9A92C" /><path d="M17 13h14M17 18h14M17 23h14M17 28h14M17 33h14M24 7v33" stroke="#D9A92C" strokeWidth="1" /></>,
+  brocoli: <><path d="M21 28h6l2 13h-10z" fill="#A6C97A" />{spots([[17, 22], [31, 22]], 7, '#3F7F2E')}{spots([[24, 16]], 8, '#3F7F2E')}{spots([[24, 25]], 6, '#3F7F2E')}{spots([[19, 19], [27, 14], [30, 20]], 2, '#5FA046')}</>,
+  zanahoria: <><path d="M14 36L33 13c3-2 6 1 4 4L17 39c-2 1-4-1-3-3z" fill="#F08A2C" /><path d="M22 28l3 2M26 23l3 2M30 18l2 2" stroke="#C7621A" strokeWidth="1.2" /><path d="M35 12l5-6M36 14l7-2M34 11l1-7" stroke="#5E9E35" strokeWidth="2.2" strokeLinecap="round" /></>,
+  tomate: <><circle cx="24" cy="26" r="13" fill="#E0442F" /><circle cx="19" cy="21" r="3" fill="#FF8A73" opacity=".7" /><path d="M24 13l3 4 4-2-2 4 4 1-5 1-4 3-1-4-5 1 3-3-3-3 4 1z" fill="#4E8F3A" /></>,
+  cebolla: <><circle cx="24" cy="24" r="14" fill="#9B3F7C" /><g fill="none" stroke="#F2D3E6" strokeWidth="1.5"><circle cx="24" cy="24" r="11" /><circle cx="24" cy="24" r="7.5" /><circle cx="24" cy="24" r="4" /></g></>,
+  papa: <><ellipse cx="24" cy="25" rx="15" ry="11" fill="#E3BC6A" stroke="#B88A3C" strokeWidth="1" />{spots([[17, 22], [28, 20], [31, 29], [21, 30]], 1.2, '#B88A3C')}</>,
+  camote: <><ellipse cx="24" cy="24" rx="17" ry="9" fill="#8C3B5A" transform="rotate(-25 24 24)" /><ellipse cx="24" cy="24" rx="14" ry="6.5" fill="#F08A3A" transform="rotate(-25 24 24)" /></>,
+  ensalada: <><path d="M10 30c2-12 12-18 20-16-2 9-9 17-20 16z" fill="#6FAE3E" /><path d="M18 36c4-11 14-15 22-12-4 8-12 14-22 12z" fill="#8CC152" /><path d="M12 29l14-12M20 35l17-10" stroke="#3F7F2E" strokeWidth="1" /><circle cx="33" cy="15" r="4" fill="#E0442F" /></>,
+  aceite: <><path d="M20 6h8v6l4 6v22a3 3 0 0 1-3 3H19a3 3 0 0 1-3-3V18l4-6z" fill="#D8C24A" stroke="#9E8A22" /><rect x="19" y="3" width="10" height="5" rx="1.5" fill="#4E8F3A" /><rect x="18" y="24" width="12" height="9" rx="1.5" fill="#FFFDF5" /></>,
+  bebida: <><path d="M14 10h20l-3 30a3 3 0 0 1-3 3h-8a3 3 0 0 1-3-3z" fill="#FFFFFF" stroke="#D9CDBA" strokeWidth="1.5" /><path d="M15.5 20h17l-2 20a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2z" fill="#F5B335" /><rect x="27" y="3" width="3" height="20" rx="1.5" fill="#E85D2A" transform="rotate(14 28 13)" /></>,
+  tacutacu: <><ellipse cx="24" cy="25" rx="17" ry="11" fill="#7E4F25" /><ellipse cx="24" cy="23" rx="14" ry="8" fill="#A36A35" />{spots([[18, 22], [27, 20], [30, 26], [21, 27]], 1.6, '#6A3E1A')}</>,
+  pesto: <g fill="none" stroke="#86AB45" strokeWidth="3.2" strokeLinecap="round"><path d="M9 18q5-6 10 0t10 0 10 0" /><path d="M9 26q5-6 10 0t10 0 10 0" stroke="#9BBE55" /><path d="M9 34q5-6 10 0t10 0 10 0" /></g>,
+  tortilla: <><circle cx="24" cy="24" r="16" fill="#F2C75A" stroke="#D9A43A" strokeWidth="1.2" />{spots([[18, 19], [27, 29]], 2.4, '#4E8F3A')}{spots([[29, 18], [24, 24]], 2.4, '#E0442F')}{spots([[17, 29]], 2.4, '#F08A2C')}</>,
+  criolla: <><g fill="none" stroke="#A8427F" strokeWidth="2.6" strokeLinecap="round"><path d="M10 20q14-9 28 0" /><path d="M10 28q14-9 28 0" /><path d="M12 36q12-8 24 0" /></g>{spots([[16, 15], [30, 33], [34, 22]], 2, '#4E8F3A')}</>,
+  ajisauce: <><path d="M8 26c0-10 9-15 17-14 9 1 16 7 15 15-1 7-9 11-17 10-9-1-15-4-15-11z" fill="#F2B632" /><path d="M14 22l9 8M20 18l10 9M27 19l7 6M16 30l6 4" stroke="#E7D3A4" strokeWidth="1.8" strokeLinecap="round" /></>,
+  mixbase: <><defs><clipPath id="mbL"><rect x="0" y="0" width="24" height="48" /></clipPath><clipPath id="mbR"><rect x="24" y="0" width="24" height="48" /></clipPath></defs><g clipPath="url(#mbL)">{dots(30, 15, 2.1, '#EEDFBD', '#C2AA7A')}</g><g clipPath="url(#mbR)">{grains('#FBF8F1', '#CDBFA6')}</g><path d="M24 6v36" stroke="#B9AA92" strokeWidth="1" strokeDasharray="2 2" /></>,
+  crema0: ramekin('#D8CF6A', spots([[20, 21], [27, 25], [23, 28]], 1.5, '#4E8F3A')),
+  crema1: ramekin('#F6F2E6', spots([[19, 22], [27, 20], [25, 28], [20, 28]], 1.4, '#5FA046')),
+  crema2: ramekin('#F2B632', <circle cx="21" cy="21" r="3" fill="#FAD877" opacity=".8" />),
+  crema3: <><circle cx="24" cy="24" r="17" fill="#FFFFFF" stroke="#D9CDBA" strokeWidth="2" /><circle cx="24" cy="24" r="12.5" fill="#F4EEE5" /><path d="M14 34L34 14" stroke="#B3A798" strokeWidth="2.4" strokeLinecap="round" /></>,
+};
+const ART_ALIAS = { mix: 'ensalada', prot: 'pollo', hv: 'huevo' };
+const ING_PHOTO = {
+  res: 'webp', palta: 'webp', ensalada: 'jpg', quinua: 'jpg', lentejas: 'jpg', huevo: 'jpg', pescado: 'jpg', tofu: 'jpg', pollo: 'jpg',
+  arroz: 'webp', brocoli: 'png', garbanzos: 'png', frejoles: 'png', mixbase: 'png', choclo: 'png', cebolla: 'png', tomate: 'png', zanahoria: 'png',
+  aceite: 'png', papa: 'png', camote: 'png',
+};
+function IngIcon({ k, size = 40, src }) {
+  const key = ART[k] ? k : ART_ALIAS[k];
+  if (src || ING_PHOTO[key]) return <img src={src || `img/ing-${key}.${ING_PHOTO[key]}`} alt="" width={size} height={size} loading="lazy" className="shrink-0" style={{ width: size, height: size, objectFit: 'cover', borderRadius: 12, background: '#fff' }} />;
+  return <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true" className="shrink-0" style={{ background: 'var(--ing-bg)', borderRadius: 12 }}>{ART[k] || ART[ART_ALIAS[k]]}</svg>;
+}
+
+/* ---------- Ilustraciones de platos según sus ingredientes ---------- */
+const COMPO = {
+  criollo: [['ajisauce', 'arroz', 'ensalada'], ['pollo', 'frejoles', 'arroz'], ['res', 'papa', 'arroz'], ['pollo', 'camote', 'ensalada'], ['arrozverde', 'pollo', 'ensalada']],
+  bowl: [['quinua', 'pollo', 'palta', 'lentejas', 'ensalada'], ['arroz', 'pescado', 'brocoli', 'garbanzos', 'zanahoria'], ['quinua', 'res', 'choclo', 'ensalada', 'tomate'], ['arroz', 'huevo', 'palta', 'frejoles', 'zanahoria'], ['quinua', 'pescado', 'palta', 'lentejas', 'tomate']],
+  veg: [['tacutacu', 'huevo', 'criolla'], ['pesto', 'frejoles', 'brocoli'], ['tofu', 'papa', 'tomate'], ['garbanzos', 'camote', 'huevo'], ['tortilla', 'quinua', 'lentejas']],
+};
+const BASECOL = { arroz: '#F3ECE0', arrozverde: '#9DBB5E', quinua: '#E7D7B2', lentejas: '#7E4F25', garbanzos: '#DDBA78', frejoles: '#E5CC8C', pollo: '#E8C089', res: '#8E4A2C', pescado: '#F5EADF', tofu: '#EFDDB0', huevo: '#F7F1E3', palta: '#A9CC63', choclo: '#F2CF4A', brocoli: '#5E9A42', zanahoria: '#F29A45', tomate: '#E35A44', cebolla: '#C47AAE', papa: '#E7C27A', camote: '#EE8C3E', ensalada: '#82B84A', tacutacu: '#8B5A2B', pesto: '#A7C46A', tortilla: '#F1C75A', criolla: '#D8A3C6', ajisauce: '#F2B632' };
+const ABS = { position: 'absolute', inset: 0, width: '100%', height: '100%' };
+function DishArt({ comps, bowl, label }) {
+  const uid = useMemo(() => 'd' + Math.random().toString(36).slice(2, 8), []);
+  const cx = 150, cy = 140, R = 92, n = comps.length;
+  const pt = (a, r) => [cx + r * Math.cos((a * Math.PI) / 180), cy + r * Math.sin((a * Math.PI) / 180)];
+  const SP = [[0.32, 0.5], [0.62, 0.24], [0.62, 0.76], [0.84, 0.5]];
+  return (
+    <svg viewBox="0 0 300 300" style={ABS} role="img" aria-label={label} preserveAspectRatio="xMidYMid slice">
+      <ellipse cx="150" cy="258" rx="112" ry="12" fill="#5a2d0c" opacity=".18" />
+      {bowl ? <><circle cx={cx} cy={cy} r="118" fill="#33463B" /><circle cx={cx} cy={cy} r="104" fill="#26352C" /></> : <><circle cx={cx} cy={cy} r="124" fill="#FFFDF8" stroke="#EADFCB" strokeWidth="3" /><circle cx={cx} cy={cy} r="102" fill="#fff" stroke="#EFE5D2" strokeWidth="2" /></>}
+      {comps.map((k, i) => {
+        const a0 = -90 + (i * 360) / n, a1 = a0 + 360 / n; const [x0, y0] = pt(a0, R), [x1, y1] = pt(a1, R);
+        const d = `M${cx} ${cy}L${x0} ${y0}A${R} ${R} 0 0 1 ${x1} ${y1}Z`;
+        return (
+          <g key={i}>
+            <clipPath id={`${uid}-${i}`}><path d={d} /></clipPath>
+            <g clipPath={`url(#${uid}-${i})`}>
+              <path d={d} fill={BASECOL[k] || '#ddd'} />
+              {SP.map(([rf, tf], j) => { const [sx, sy] = pt(a0 + (a1 - a0) * tf, R * rf); return <g key={j} transform={`translate(${sx - 18} ${sy - 18}) scale(0.75)`}>{ART[k]}</g>; })}
+            </g>
+            <path d={`M${cx} ${cy}L${x0} ${y0}`} stroke="rgba(255,255,255,.65)" strokeWidth="2" />
+          </g>
+        );
+      })}
+      <circle cx={cx} cy={cy} r={R} fill="none" stroke="rgba(0,0,0,.08)" strokeWidth="2" />
+    </svg>
+  );
+}
+const DRINK = [['#F5B335', '#F7D046'], ['#C98A4B', '#D9483B'], ['#E4DC6A', '#C9D64B'], ['#D9C76A', '#7BAE4A'], ['#5B1E4D', '#F2C94C']];
+function DrinkArt({ day, label }) {
+  const [liq, garn] = DRINK[day % 5];
+  return (
+    <svg viewBox="0 0 300 300" style={ABS} role="img" aria-label={label} preserveAspectRatio="xMidYMid slice">
+      <ellipse cx="150" cy="268" rx="72" ry="9" fill="#5a2d0c" opacity=".18" />
+      <path d="M96 70h108l-14 190a10 10 0 0 1-10 9h-60a10 10 0 0 1-10-9z" fill="#fff" opacity=".85" stroke="#EADFCB" strokeWidth="3" />
+      <path d="M101 112h98l-11 148a10 10 0 0 1-10 9h-56a10 10 0 0 1-10-9z" fill={liq} />
+      <path d="M101 112h98" stroke="#fff" strokeWidth="4" opacity=".5" />
+      {spots([[128, 160], [168, 205], [140, 232], [175, 150]], 6, 'rgba(255,255,255,.45)')}
+      {day % 5 === 2
+        ? <path d="M196 62l8 18 19 2-14 13 4 19-17-10-17 10 4-19-14-13 19-2z" fill={garn} stroke="#A9B33A" strokeWidth="2" />
+        : <><circle cx="198" cy="82" r="24" fill={garn} stroke="#fff" strokeWidth="4" /><circle cx="198" cy="82" r="14" fill="none" stroke="#fff" strokeWidth="2" opacity=".6" /></>}
+      <rect x="160" y="28" width="9" height="120" rx="4" fill="#E85D2A" transform="rotate(10 164 88)" />
+    </svg>
+  );
+}
+function SnackArt({ id, label }) {
+  const plate = <><ellipse cx="150" cy="250" rx="118" ry="12" fill="#5a2d0c" opacity=".18" /><ellipse cx="150" cy="200" rx="128" ry="46" fill="#FFFDF8" stroke="#EADFCB" strokeWidth="3" /></>;
+  const glass = (layers, top) => (<>
+    <ellipse cx="150" cy="268" rx="70" ry="9" fill="#5a2d0c" opacity=".18" />
+    <path d="M92 70h116l-16 192a8 8 0 0 1-8 7h-68a8 8 0 0 1-8-7z" fill="#fff" opacity=".9" stroke="#EADFCB" strokeWidth="3" />
+    {layers.map(([y0, y1, col], i) => { const w = (y) => 58 - (y - 70) * (16 / 192); return <path key={i} d={`M${150 - w(y0)} ${y0}H${150 + w(y0)}L${150 + w(y1)} ${y1}H${150 - w(y1)}Z`} fill={col} />; })}
+    {top}
+  </>);
+  const art = {
+    s1: <>{plate}{[[112, 168, -8], [196, 160, 8]].map(([x, y, r], i) => <g key={i} transform={`rotate(${r} ${x} ${y})`}><ellipse cx={x} cy={y} rx="46" ry="40" fill="#E3B26A" stroke="#B9823C" strokeWidth="3" /><ellipse cx={x} cy={y} rx="35" ry="30" fill="#F7EFE0" />{spots([[x - 14, y - 8], [x + 10, y + 10]], 9, '#9CC65A')}{spots([[x + 12, y - 10]], 8, '#E0442F')}{spots([[x - 8, y + 12], [x + 2, y - 2]], 7, '#E9C089')}</g>)}</>,
+    s2: <>{plate}<rect x="58" y="120" width="184" height="96" rx="26" fill="#C68B4E" stroke="#8E5A2B" strokeWidth="5" /><path d="M72 150q20-16 40 0t40 0 40 0 36 0v40H72z" fill="#9CC65A" /><ellipse cx="146" cy="164" rx="38" ry="26" fill="#FFFFFF" /><circle cx="146" cy="164" r="13" fill="#F4B731" />{spots([[96, 186], [206, 150], [212, 192]], 11, '#E0442F')}{spots([[110, 160], [182, 186], [190, 166], [124, 196]], 2, '#F7EFE0')}</>,
+    s3: glass([[190, 262, '#F7F3EA'], [162, 190, '#D9A55B'], [140, 162, '#C9303A'], [104, 140, '#F7F3EA']], <>{spots([[124, 100], [176, 98]], 13, '#D9343F')}{spots([[150, 92], [140, 108], [164, 110]], 8, '#3B4A8C')}{spots([[172, 176], [128, 180], [150, 170]], 3, '#A8692C')}</>),
+    p1: <>{plate}<ellipse cx="150" cy="190" rx="86" ry="26" fill="#D8A15E" /><rect x="64" y="150" width="172" height="40" fill="#D8A15E" /><ellipse cx="150" cy="150" rx="86" ry="26" fill="#9C6430" /><rect x="64" y="124" width="172" height="26" fill="#9C6430" /><ellipse cx="150" cy="124" rx="86" ry="26" fill="#E2B373" /><rect x="64" y="100" width="172" height="24" fill="#E2B373" /><ellipse cx="150" cy="100" rx="86" ry="26" fill="#EDC58A" />{spots([[78, 140], [100, 146], [128, 150], [160, 150], [190, 147], [218, 140]], 4, '#FFFFFF')}{spots([[120, 96], [168, 104], [150, 90], [190, 96]], 2.5, '#FFF8EC')}</>,
+    p2: <>{plate}<path d="M70 150l80-34 80 34-80 34z" fill="#5E3622" /><path d="M70 150v32l80 34v-32z" fill="#3E2214" /><path d="M230 150v32l-80 34v-32z" fill="#4A2A1A" /><g fill="#A86E35">{[[124, 146, 20], [168, 140, -25], [150, 160, 10]].map(([x, y, r], i) => <ellipse key={i} cx={x} cy={y} rx="13" ry="7" transform={`rotate(${r} ${x} ${y})`} />)}</g>{spots([[104, 152], [194, 154], [146, 130]], 3, '#2C160C')}</>,
+    p3: glass([[214, 262, '#D9B27A'], [128, 214, '#FBF6EA'], [104, 128, '#F2A51A']], spots([[132, 114], [150, 110], [168, 118], [142, 122], [160, 106]], 2.4, '#1F1A10')),
+  };
+  return <svg viewBox="0 0 300 300" style={ABS} role="img" aria-label={label} preserveAspectRatio="xMidYMid slice">{art[id]}</svg>;
+}
+const PHOTOS = {
+  'criollo-1': 'jpg', 'criollo-2': 'jpg', 'criollo-3': 'jpg', 'criollo-4': 'jpg', 'criollo-5': 'jpg',
+  'bowl-1': 'jpg', 'bowl-2': 'jpg', 'bowl-3': 'jpg', 'bowl-4': 'jpg', 'bowl-5': 'jpg',
+  'veg-1': 'jpg', 'veg-2': 'jpg', 'veg-3': 'jpg', 'veg-4': 'jpg', 'veg-5': 'webp',
+  'snack-1': 'jpg', 'snack-2': 'jpg', 'snack-3': 'jpg',
+  'postre-1': 'webp', 'postre-2': 'jpg', 'postre-3': 'png',
+  'bebida-1': 'jpg', 'bebida-2': 'jpg', 'bebida-3': 'jpg', 'bebida-4': 'jpg', 'bebida-5': 'jpg',
+};
+function DishPhoto({ line, idx, name, className = '', style }) {
+  const key = `${line}-${idx + 1}`;
+  const photo = !!PHOTOS[key];
+  return (
+    <div className={'overflow-hidden relative ' + className} style={{ background: 'linear-gradient(145deg,#FFE7CF,#F6C99A 55%,#E9A872)', ...style }}>
+      {photo ? <img src={`img/${key}.${PHOTOS[key]}`} alt={name} loading="lazy" style={{ ...ABS, objectFit: 'cover' }} />
+        : line === 'bebida' ? <DrinkArt day={idx} label={`Ilustración de ${name}`} />
+        : line === 'snack' || line === 'postre' ? <SnackArt id={(line === 'snack' ? 's' : 'p') + (idx + 1)} label={`Ilustración de ${name}`} />
+        : <DishArt comps={COMPO[line][idx]} bowl={line === 'bowl'} label={`Ilustración de ${name}`} />}
+      {!photo && <span className="absolute bottom-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,253,248,.85)', color: '#6A6258' }}>Ilustración</span>}
+    </div>
+  );
+}
+function Donut({ p, c, g, center, sub }) {
+  const R = 68, C = 2 * Math.PI * R; let off = 0;
+  const segs = [[p, 'var(--prot)'], [c, 'var(--carb)'], [g, 'var(--fat)']];
+  return (
+    <svg viewBox="0 0 200 200" className="w-full" style={{ maxWidth: 230 }} role="img" aria-label={`Prot ${r0(p)}%, Carb ${r0(c)}%, Grasa ${r0(g)}%`}>
+      <circle cx="100" cy="100" r={R} fill="none" stroke="var(--surface2)" strokeWidth="24" />
+      {segs.map(([v, col], i) => { const len = (C * v) / 100; const el = <circle key={i} cx="100" cy="100" r={R} fill="none" stroke={col} strokeWidth="24" strokeDasharray={`${len} ${C - len}`} strokeDashoffset={-off} transform="rotate(-90 100 100)" />; off += len; return el; })}
+      <text x="100" y="100" textAnchor="middle" fontSize="32" fontWeight="700" fill="var(--fg)" fontFamily="var(--font-display)">{center}</text>
+      <text x="100" y="122" textAnchor="middle" fontSize="12" fill="var(--muted)">{sub}</text>
+    </svg>
+  );
+}
+function MacroBar({ label, color, have, goal }) {
+  const pct = goal > 0 ? (have / goal) * 100 : 0;
+  return (
+    <div>
+      <div className="flex justify-between items-baseline gap-2 mb-1"><span className="font-semibold text-sm">{label}</span>
+        <span className="num text-sm"><b>{r0(have)}g</b> <span className="muted">/ {r0(goal)}g</span> <b style={{ color: pct > 105 ? 'var(--pri)' : 'var(--fg)' }}>({r0(pct)}%)</b></span></div>
+      <div className="bar" role="progressbar" aria-valuenow={r0(pct)} aria-valuemin="0" aria-valuemax="100" aria-label={label}><i style={{ width: clamp(pct, 0, 100) + '%', background: color }} /></div>
+    </div>
+  );
+}
+function QR({ text, size = 176 }) {
+  const m = useMemo(() => {
+    try { const q = qrcode(0, 'M'); q.addData(text); q.make(); const n = q.getModuleCount(); let d = ''; for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c + 3} ${r + 3}h1v1h-1z`; return { n, d }; } catch (e) { return null; }
+  }, [text]);
+  if (!m) return <div className="soft p-4 text-sm muted">No se pudo generar el QR.</div>;
+  return (<svg viewBox={`0 0 ${m.n + 6} ${m.n + 6}`} width={size} height={size} role="img" aria-label="Código QR de recojo" style={{ maxWidth: '100%' }}><rect width={m.n + 6} height={m.n + 6} fill="#ffffff" rx="2" /><path d={m.d} fill="#1F2421" /></svg>);
+}
+const NutRow = ({ n, big }) => (
+  <div className="grid grid-cols-4 gap-2 text-center num">
+    {[['kcal', r0(n.k), 'var(--pri)'], ['Prot', r0(n.p) + ' g', 'var(--prot)'], ['Carb', r0(n.c) + ' g', 'var(--grn)'], ['Fibra', r1(n.f) + ' g', 'var(--mos-fg)']].map(([a, b, c]) => (
+      <div key={a} className="soft py-2"><div className={'font-bold ' + (big ? 'text-lg' : '')} style={{ color: c }}>{b}</div><div className="text-[11px] muted">{a}</div></div>
+    ))}
+  </div>
+);
+
+/* ---------- App ---------- */
+function App() {
+  const todayIdx = (() => { const d = new Date().getDay(); return d >= 1 && d <= 5 ? d - 1 : 0; })();
+  const [view, setView] = useState('carta'); // carta | calc | checkout
+  const [mode, setMode] = useState('anticipado');
+  const [day, setDay] = useState(todayIdx);
+  const [cat, setCat] = useState('all');
+  const [stock, setStock] = useState(12);
+  const [cart, setCart] = useState([]);
+  const [drawer, setDrawer] = useState(false);
+  const [dish, setDish] = useState(null); // {line, idx, cfg, qty}
+  const [toast, setToast] = useState('');
+  const [form, setForm] = useState({ name: '', ucode: '', phone: '' });
+  const [slot, setSlot] = useState(null);
+  const [pay, setPay] = useState('yape');
+  const [touched, setTouched] = useState(false);
+  const [ticket, setTicket] = useState(null);
+
+  /* calculadora */
+  const [sex, setSex] = useState('H'); const [age, setAge] = useState(23); const [weight, setWeight] = useState(70); const [height, setHeight] = useState(172);
+  const [act, setAct] = useState(1.375); const [adj, setAdj] = useState(0); const [macro, setMacro] = useState('eq');
+  const [plate, setPlate] = useState([{ id: 'pollo', g: 120 }, { id: 'quinua', g: 200 }, { id: 'lentejas', g: 100 }, { id: 'mix', g: 200 }, { id: 'palta', g: 50 }]);
+  const [example, setExample] = useState(true);
+  const [pickCat, setPickCat] = useState('prot'); const [pickId, setPickId] = useState('pollo'); const [pickG, setPickG] = useState(100);
+
+  useEffect(() => { const t = setInterval(() => setStock((s) => (s > 3 && Math.random() < 0.5 ? s - 1 : s)), 7000); return () => clearInterval(t); }, []);
+  useEffect(() => {
+    const f = (e) => { if (e.key === 'Escape') { setDish(null); setDrawer(false); } };
+    window.addEventListener('keydown', f); return () => window.removeEventListener('keydown', f);
+  }, []);
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [view]);
+  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 2200); return () => clearTimeout(t); }, [toast]);
+  useEffect(() => { if (mode !== 'mismo' && pay === 'efectivo') setPay('yape'); }, [mode]);
+
+  const base = MODES[mode].price;
+  const unitPrice = (it) => (it.fixed != null ? it.fixed : base + it.extraCost + (it.adj || 0));
+  const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+  const mainCount = cart.filter((i) => i.fixed == null).reduce((s, i) => s + i.qty, 0);
+  const addFixed = (key, line, name, price, n) => {
+    setCart((c) => (c.some((i) => i.key === key) ? c.map((i) => (i.key === key ? { ...i, qty: Math.min(9, i.qty + 1) } : i)) : [...c, { uid: Math.random().toString(36).slice(2), key, line, name, day: line === 'bebida' ? DAYS[day] : 'Snack / postre', qty: 1, n, notes: [], extraCost: 0, adj: 0, fixed: price }]));
+    setToast('Agregado al carrito');
+  };
+  const cartTotal = cart.reduce((s, i) => s + unitPrice(i) * i.qty, 0);
+  const cartNut = cart.reduce((a, i) => addN(a, i.n, i.qty), zero());
+
+  /* ---- personalizador ---- */
+  const openDish = (line, idx) => setDish({ line, idx, qty: 1, cfg: { base: MENU[line][idx].base || 'quinua', cream: 0, removed: {}, extras: {} } });
+  const dc = dish ? configure(dish.line, dish.idx, dish.cfg) : null;
+  const setCfg = (patch) => setDish((d) => ({ ...d, cfg: { ...d.cfg, ...patch } }));
+  const addToCart = () => {
+    const d = MENU[dish.line][dish.idx];
+    setCart((c) => [...c, { uid: Math.random().toString(36).slice(2), line: dish.line, name: d.n, day: DAYS[day], qty: dish.qty, n: dc.n, notes: dc.notes, extraCost: dc.extraCost, adj: 0 }]);
+    setDish(null); setToast('Agregado al carrito');
+  };
+  const addCustom = () => {
+    const t = plate.reduce((a, r) => addN(a, { k: ING[r.id].k, p: ING[r.id].p, c: ING[r.id].c, g: ING[r.id].g, f: 0 }, r.g / 100), zero());
+    setCart((c) => [...c, { uid: Math.random().toString(36).slice(2), line: 'custom', name: 'Plato personalizado', day: 'Hoy', qty: 1, n: t, notes: plate.map((r) => `${ING[r.id].n}: ${r.g} g`), extraCost: 0, adj: plateAdj }]);
+    setToast('Plato personalizado agregado'); setDrawer(true);
+  };
+  const setQty = (uid, q) => setCart((c) => (q <= 0 ? c.filter((i) => i.uid !== uid) : c.map((i) => (i.uid === uid ? { ...i, qty: Math.min(9, q) } : i))));
+
+  /* ---- calculadora ---- */
+  const tmb = sex === 'H' ? 10 * weight + 6.25 * height - 5 * age + 5 : 10 * weight + 6.25 * height - 5 * age - 161;
+  const tdee = tmb * act; const meta = tdee * (1 + adj / 100); const lunchK = meta * 0.35; const dist = MACROS[macro];
+  const tgt = { p: (lunchK * dist.p) / 400, c: (lunchK * dist.c) / 400, g: (lunchK * dist.g) / 900 };
+  const pt = useMemo(() => plate.reduce((a, r) => { const i = ING[r.id], f = r.g / 100; a.k += i.k * f; a.p += i.p * f; a.c += i.c * f; a.g += i.g * f; a.grams += r.g; return a; }, { k: 0, p: 0, c: 0, g: 0, grams: 0 }), [plate]);
+  const plateAdj = useMemo(() => {
+    let tot = 0;
+    Object.keys(CATS).forEach((cc) => {
+      const rows = plate.filter((r) => ING[r.id].cat === cc); const grams = rows.reduce((s, r) => s + r.g, 0);
+      if (grams > CATS[cc].std) { const frac = (grams - CATS[cc].std) / grams; tot += rows.reduce((s, r) => s + ((r.g * ING[r.id].rate) / 100) * frac, 0); }
+    });
+    return Math.round(tot * 100) / 100;
+  }, [plate]);
+  const kM = pt.p * 4 + pt.c * 4 + pt.g * 9;
+  const shares = kM > 0 ? { p: (pt.p * 4 / kM) * 100, c: (pt.c * 4 / kM) * 100, g: (pt.g * 9 / kM) * 100 } : { p: dist.p, c: dist.c, g: dist.g };
+  const addIng = () => {
+    const g = clamp(Number(pickG) || 0, 1, 1000);
+    const wasEx = example; if (example) setExample(false);
+    setPlate((pl) => { const b = wasEx ? [] : pl; const ex = b.find((r) => r.id === pickId); return ex ? b.map((r) => (r.id === pickId ? { ...r, g: clamp(r.g + g, 0, 1000) } : r)) : [...b, { id: pickId, g }]; });
+  };
+  const setGrams = (id, v) => setPlate((pl) => pl.map((r) => (r.id === id ? { ...r, g: clamp(Number(v) || 0, 0, 1000) } : r)));
+
+  /* ---- checkout ---- */
+  const errs = {
+    name: form.name.trim().length < 3 ? 'Escribe tu nombre completo.' : '',
+    ucode: !/^\d{8,9}$/.test(form.ucode) ? 'El código UTEC tiene 8 o 9 dígitos.' : '',
+    phone: !/^9\d{8}$/.test(form.phone) ? 'Ingresa un WhatsApp de 9 dígitos que empiece con 9.' : '',
+    slot: slot === null ? 'Elige una franja de recojo.' : '',
+  };
+  const formOk = !errs.name && !errs.ucode && !errs.phone && !errs.slot;
+  const confirmOrder = () => {
+    setTouched(true); if (!formOk || !cart.length) return;
+    setTicket({ code: 'BS-' + Math.random().toString(36).slice(2, 8).toUpperCase(), items: cart.map((i) => ({ ...i, unit: unitPrice(i) })), nut: cartNut, total: cartTotal, slot, pay, mode, name: form.name.trim(), ucode: form.ucode });
+    if (mode === 'mismo') setStock((s) => Math.max(0, s - cartCount));
+    setCart([]);
+  };
+
+  /* ------------------------------ VISTAS ------------------------------ */
+  const header = (
+    <header className="sticky z-50" style={{ top: 'env(safe-area-inset-top,0px)', background: 'var(--surface)', borderBottom: '1px solid var(--line)', marginInline: 'calc(-1 * max(16px, env(safe-area-inset-left,0px)))', paddingInline: 'max(16px, env(safe-area-inset-left,0px))' }}>
+      <div className="wrap flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
+        <button className="flex items-center gap-2.5 text-left" onClick={() => setView('carta')} aria-label="Bien Servido, ir a la carta">
+          <svg width="42" height="42" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="var(--pri)" /><circle cx="20" cy="20" r="16" fill="none" stroke="var(--mos)" strokeWidth="1.5" /><text x="20" y="25.5" textAnchor="middle" fontSize="16" fontWeight="800" fill="var(--pri-fg)" fontFamily="var(--font-display)">4B</text></svg>
+          <span className="leading-tight"><span className="display block text-xl font-extrabold">Bien Servido</span><span className="block text-[11px] muted">Nuestra comida es rica, barata, buena y bastante</span></span>
+        </button>
+        <nav className="flex gap-2 ml-auto lg:ml-6 order-3 lg:order-2 w-full lg:w-auto overflow-x-auto" aria-label="Secciones">
+          <button className="tab" aria-selected={view === 'carta'} onClick={() => setView('carta')}>🍽️ Platos Principales (Lun - Vie)</button>
+          <button className="tab" aria-selected={view === 'extras'} onClick={() => setView('extras')}>🥤 Snacks &amp; Postres Saludables</button>
+          <button className="tab tab-hot" aria-selected={view === 'calc'} onClick={() => setView('calc')}>🧮 Arma tu Plato por Macros (Calculadora TDEE)</button>
+        </nav>
+        <button className="btn btn-p order-2 lg:order-3 lg:ml-auto" onClick={() => setDrawer(true)} aria-label={`Abrir carrito, ${cartCount} platos`}>
+          <Icon n="bag" />Carrito<span className="chip num" style={{ background: 'var(--pri-fg)', color: 'var(--pri)' }}>{cartCount}</span>{cartCount > 0 && <span className="num">{S(cartTotal)}</span>}
+        </button>
+      </div>
+    </header>
+  );
+
+  const modeBar = (
+    <div className="grid md:grid-cols-3 gap-3" role="radiogroup" aria-label="Modalidad de pedido">
+      {Object.entries(MODES).map(([k, v]) => (
+        <button key={k} role="radio" aria-checked={mode === k} onClick={() => setMode(k)} className={'card p-4 text-left ' + (mode === k ? 'sel' : '')}>
+          <div className="flex justify-between items-start gap-2"><span className="font-bold">{v.name}</span>{v.badge && <span className="chip chip-m">{v.badge}</span>}{k === 'mismo' && <span className="chip chip-p num">Quedan {stock} platos hoy</span>}</div>
+          <div className="flex items-baseline gap-2 mt-1"><span className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>{S(k === 'plan' ? 13 : v.price)}</span><span className="text-xs muted">{v.unit}</span></div>
+          <div className="text-xs muted mt-0.5">{v.sub}</div>
+        </button>
+      ))}
+    </div>
+  );
+
+  const bebidaCard = (() => {
+    const b = BEB[day];
+    return (
+      <section className="rounded-3xl overflow-hidden grid sm:grid-cols-[200px_1fr] items-stretch" style={{ background: 'var(--mos-soft)', border: '1px solid var(--mos)' }} aria-label="Bebida natural del día">
+        <DishPhoto line="bebida" idx={day} name={b.n} style={{ minHeight: 170, height: '100%' }} />
+        <div className="p-5 flex flex-col gap-2 min-w-0">
+          <div className="flex flex-wrap gap-2 items-center"><span className="chip" style={{ background: 'var(--mos)', color: '#3b2a00' }}>🥤 Bebida Natural del Día · {DAYS[day]}</span><span className="chip chip-g">{b.tag}</span><span className="chip num">{b.k} kcal</span></div>
+          <h3 className="display text-xl font-bold leading-tight">{b.n}</h3>
+          <p className="text-sm muted">{b.d}</p>
+          <div className="mt-auto flex items-center justify-between gap-3 flex-wrap"><div className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>+ {S(BEB_PRICE)}</div>
+            <button className="btn btn-p" onClick={() => addFixed('beb' + day, 'bebida', 'Bebida del Día: ' + b.n, BEB_PRICE, { k: b.k, p: 0, c: b.c, g: 0, f: 0 })}><Icon n="plus" size={16} />Agregar por {S(BEB_PRICE)}</button></div>
+        </div>
+      </section>
+    );
+  })();
+
+  const menuItem = (it) => {
+    const n = { k: it.k, p: it.p, c: it.c, g: gOf(it), f: it.f };
+    return (
+      <article key={it.id} className="card dish overflow-hidden flex flex-col">
+        <div className="relative"><DishPhoto line={it.line} idx={Number(it.id.slice(1)) - 1} name={it.n} style={{ aspectRatio: '4 / 3' }} />
+          {it.star && <span className="chip absolute top-3 left-3" style={{ background: 'var(--mos)', color: '#3b2a00' }}>★ Producto estrella</span>}
+          {it.tags && !it.star && it.tags.map((t) => <span key={t} className="chip chip-g absolute top-3 left-3">{t}</span>)}</div>
+        <div className="p-4 flex flex-col gap-3 flex-1">
+          <div><h3 className="display text-lg font-bold leading-tight">{it.n}</h3><p className="text-sm muted mt-1">{it.d}</p></div>
+          <div className="flex flex-wrap gap-1.5 num"><span className="chip chip-g">{it.k} kcal</span><span className="chip chip-g">{it.p} g proteína</span><span className="chip">{it.c} g carb</span><span className="chip">{it.f} g fibra</span></div>
+          <div className="mt-auto flex items-center justify-between gap-3"><div className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>{S(it.price)}</div>
+            <button className="btn btn-p" onClick={() => addFixed(it.id, it.line, it.n, it.price, n)}><Icon n="plus" size={16} />Agregar</button></div>
+        </div>
+      </article>
+    );
+  };
+
+  const extrasView = (
+    <div className="pop py-8 pb-10 flex flex-col gap-8">
+      <div><h1 className="display text-4xl font-extrabold leading-tight">Snacks &amp; postres saludables</h1><p className="muted mt-2 max-w-2xl">Para media mañana, pre-entreno o cuando aprieta el hambre entre clases. Se pide junto con tu almuerzo y se recoge en el mismo pase.</p></div>
+      <div className="flex gap-2 overflow-x-auto" role="tablist" aria-label="Día de la bebida">{DAYS.map((d, i) => <button key={d} role="tab" className="tab" aria-selected={day === i} onClick={() => setDay(i)}>{d}{i === todayIdx ? ' · hoy' : ''}</button>)}</div>
+      {bebidaCard}
+      <section><div className="flex items-baseline justify-between gap-3 flex-wrap"><h2 className="display text-2xl font-bold">Snacks saludables</h2><span className="text-sm muted">Wrap, tostón y parfait</span></div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">{SNACKS.map(menuItem)}</div></section>
+      <section><div className="flex items-baseline justify-between gap-3 flex-wrap"><h2 className="display text-2xl font-bold">Postres saludables</h2><span className="text-sm muted">Dulces, bajos en azúcar</span></div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">{POSTRES.map(menuItem)}</div></section>
+    </div>
+  );
+
+  const carta = (
+    <div className="pop pb-10">
+      <section className="py-8">
+        <h1 className="display text-4xl md:text-5xl font-extrabold leading-[1.05] max-w-3xl">Comida casera, saludable y contundente.</h1>
+        <p className="muted mt-3 max-w-2xl text-[17px]">Calientes, con porciones medidas y pensados para la comunidad de UTEC. Pides aquí y recoges en el Piso 1 de UTEC, de 11:00 a.m. a 6:00 p.m., sin colas.</p>
+        <div className="mt-6">{modeBar}</div>
+      </section>
+      <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Día">
+        {DAYS.map((d, i) => <button key={d} role="tab" className="tab" aria-selected={day === i} onClick={() => setDay(i)}>{d}{i === todayIdx ? ' · hoy' : ''}</button>)}
+      </div>
+      <div className="flex gap-2 overflow-x-auto mt-3 pb-1" role="tablist" aria-label="Categoría">
+        {[['all', 'Todos'], ...Object.entries(LINES).map(([k, v]) => [k, v.name])].map(([k, n]) => <button key={k} role="tab" className="tab" aria-selected={cat === k} onClick={() => setCat(k)}>{n}</button>)}
+      </div>
+      <div className="mt-5">{bebidaCard}</div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-5">
+        {Object.keys(LINES).filter((k) => cat === 'all' || cat === k).map((k) => {
+          const d = MENU[k][day]; const nn = { k: d.k, p: d.p, c: d.c, f: d.f };
+          return (
+            <article key={k} className="card dish overflow-hidden flex flex-col">
+              <div className="relative">
+                <DishPhoto line={k} idx={day} name={d.n} style={{ aspectRatio: '4 / 3' }} />
+                <span className="chip chip-m absolute top-3 left-3"><Icon n={LINES[k].icon} size={13} />{LINES[k].name}</span>
+                {k === 'criollo' && <span className="chip absolute top-3 right-3" style={{ background: 'var(--surface)' }}><Icon n="lock" size={12} />Receta de olla</span>}
+              </div>
+              <div className="p-4 flex flex-col gap-3 flex-1">
+                <div><h3 className="display text-xl font-bold leading-tight">{d.n}</h3>{d.sub && <div className="text-[13px] font-semibold" style={{ color: 'var(--grn)' }}>{d.sub}</div>}<p className="text-sm muted mt-1">{d.d}</p></div>
+                <div className="flex flex-wrap gap-1.5 num">
+                  <span className="chip chip-g">{nn.k} kcal</span><span className="chip chip-g">{nn.p} g proteína</span><span className="chip">{nn.c} g carb</span><span className="chip">{nn.f} g fibra</span>
+                </div>
+                <div className="mt-auto flex items-center justify-between gap-3">
+                  <div className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>{S(base)}</div>
+                  <button className="btn btn-p" onClick={() => openDish(k, day)}>Personalizar y Agregar</button>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+        <article className="card dish p-5 flex flex-col gap-3" style={{ background: 'var(--mos-soft)', borderColor: 'var(--mos)' }}>
+          <span className="chip chip-m self-start"><Icon n="calc" size={13} />Para quienes entrenan</span>
+          <h3 className="display text-xl font-bold">Arma tu plato por gramos</h3>
+          <p className="text-sm">Calcula tu TDEE, mira cuántos macros necesitas en el almuerzo y pesa cada ingrediente. El precio parte desde {S(base)} según el gramaje.</p>
+          <button className="btn btn-p mt-auto" onClick={() => setView('calc')}>Abrir la calculadora <Icon n="arrow" size={16} /></button>
+        </article>
+      </div>
+    </div>
+  );
+
+  /* ---- modal personalizador ---- */
+  const dishModal = dish && (() => {
+    const d = MENU[dish.line][dish.idx]; const line = dish.line; const unit = base + dc.extraCost;
+    return (
+      <div className="overlay overflow-y-auto" onClick={() => setDish(null)} style={{ padding: 'max(12px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))' }}>
+        <div role="dialog" aria-modal="true" aria-label={d.n} className="card wrap my-2 p-4 md:p-6 pop" style={{ maxWidth: 1100 }} onClick={(e) => e.stopPropagation()}>
+          <div className="flex justify-between items-center gap-3 text-sm font-semibold">
+            <span className="muted">Carta › {LINES[line].name} › <span style={{ color: 'var(--fg)' }}>{d.n}</span></span>
+            <button className="btn !p-2" onClick={() => setDish(null)} aria-label="Cerrar"><Icon n="x" /></button>
+          </div>
+          <div className="grid lg:grid-cols-[1fr_1fr] gap-6 mt-4 items-start">
+            <div className="flex flex-col gap-4 min-w-0">
+              <DishPhoto line={line} idx={dish.idx} name={d.n} className="rounded-2xl" style={{ aspectRatio: '4 / 3' }} />
+              <div><span className="chip chip-m">{DAYS[day]} · {LINES[line].name}</span>
+                <h2 className="display text-3xl font-extrabold mt-2 leading-tight">{d.n}</h2><p className="muted mt-1">{d.d}</p>
+                <div className="display text-3xl font-extrabold num mt-2" style={{ color: 'var(--pri)' }}>{S(base)}<span className="text-sm muted font-normal"> {MODES[mode].name.toLowerCase()}</span></div></div>
+              <div><div className="lbl mb-2">Tu plato en vivo</div><NutRow n={dc.n} big /><div className="text-xs muted mt-1 num">Grasas: {r1(dc.n.g)} g · Lo que cambies se recalcula al instante.</div></div>
+              <div className="text-sm flex items-start gap-2"><span style={{ color: 'var(--pri)' }}><Icon n="pin" size={16} /></span><span><b>Retiro en local:</b> Módulo Piso 1 UTEC, de 11:00 a.m. a 6:00 p.m.</span></div>
+            </div>
+
+            <div className="flex flex-col gap-4 min-w-0">
+              {line === 'criollo' ? (
+                <div className="rounded-2xl p-4 flex gap-3 items-start" style={{ background: 'var(--mos-soft)' }}>
+                  <span style={{ color: 'var(--mos-fg)' }}><Icon n="lock" /></span>
+                  <p className="text-sm"><b>No se pueden retirar ingredientes.</b> Este guiso se cocina en olla para mantener su sabor casero tradicional, por lo que no es posible retirar ingredientes base. Sí puedes agregar extras.</p>
+                </div>
+              ) : (<>
+                {line === 'bowl' && (
+                  <div className="card p-4"><div className="flex justify-between"><h3 className="font-bold">Elige tu base</h3><span className="chip chip-g">S/ 0.00</span></div>
+                    <div className="grid gap-2 mt-3" role="radiogroup">{Object.entries(BASES).map(([k, b]) => (
+                      <button key={k} role="radio" aria-checked={dish.cfg.base === k} onClick={() => setCfg({ base: k })} className={'soft p-2.5 text-left text-sm font-semibold flex items-center gap-3 ' + (dish.cfg.base === k ? 'sel' : '')}><IngIcon k={k === 'mix' ? 'mixbase' : k} />{b.n}</button>
+                    ))}</div></div>
+                )}
+                <div className="card p-4"><div className="flex justify-between"><h3 className="font-bold">Quita lo que no quieras</h3><span className="chip chip-g">S/ 0.00</span></div>
+                  <div className="grid sm:grid-cols-2 gap-2 mt-3">{d.rm.map((id) => (
+                    <label key={id} className="soft p-2.5 flex items-center gap-3 text-sm font-semibold cursor-pointer">
+                      <input type="checkbox" checked={!dish.cfg.removed[id]} onChange={(e) => setCfg({ removed: { ...dish.cfg.removed, [id]: !e.target.checked } })} />
+                      <span style={{ opacity: dish.cfg.removed[id] ? 0.35 : 1, filter: dish.cfg.removed[id] ? 'grayscale(1)' : 'none' }}><IngIcon k={id} /></span>
+                      <span className="capitalize" style={dish.cfg.removed[id] ? { textDecoration: 'line-through', color: 'var(--muted)' } : null}>{RM[id].n}</span><span className="ml-auto text-xs muted num">{r0(RM[id].k)} kcal</span>
+                    </label>
+                  ))}</div>
+                  <p className="text-xs muted mt-2">Desmarca un ingrediente para quitarlo. Verás las calorías y macros actualizadas.</p></div>
+                <div className="card p-4"><div className="flex justify-between"><h3 className="font-bold">Crema incluida</h3><span className="chip chip-g">S/ 0.00</span></div>
+                  <div className="grid sm:grid-cols-2 gap-2 mt-3" role="radiogroup">{CREAMS.map((cr, i) => (
+                    <button key={cr.n} role="radio" aria-checked={dish.cfg.cream === i} onClick={() => setCfg({ cream: i })} className={'soft p-2.5 text-left text-sm font-semibold flex items-center gap-3 ' + (dish.cfg.cream === i ? 'sel' : '')}><IngIcon k={'crema' + i} />{cr.n}</button>
+                  ))}</div></div>
+              </>)}
+
+              <div className="card p-4">
+                <div className="flex justify-between items-baseline"><h3 className="font-bold">Desea agregar extras</h3><span className="text-sm font-semibold" style={{ color: 'var(--danger)' }}>(Opcional)</span></div>
+                <div className="grid gap-2 mt-3">{EXTRAS_BY_LINE[line].map((id) => {
+                  const e = exOf(id, dish.idx); const q = dish.cfg.extras[id] || 0; const mx = id === 'bebida' ? 1 : 3; const set = (v) => setCfg({ extras: { ...dish.cfg.extras, [id]: clamp(v, 0, mx) } });
+                  return (
+                    <div key={id} className={'soft p-3 flex items-center justify-between gap-3 ' + (q ? 'sel' : '')} style={id === 'bebida' && !q ? { background: 'var(--mos-soft)' } : null}>
+                      <IngIcon k={id === 'quinua' ? 'mixbase' : id} src={id === 'bebida' ? `img/bebida-${dish.idx + 1}.jpg` : null} size={44} />
+                      <div className="min-w-0 flex-1"><div className="font-semibold text-sm">{e.n}</div><div className="text-xs muted num">+{e.k} kcal{e.p ? ` · +${e.p} g proteína` : ''}</div><div className="text-sm font-bold num" style={{ color: 'var(--pri)' }}>+{S(e.price)}</div></div>
+                      <div className="flex items-center gap-1.5">
+                        <button className="btn !p-1.5 !rounded-full" aria-label={`Quitar ${e.n}`} disabled={!q} onClick={() => set(q - 1)}><Icon n="minus" size={14} /></button>
+                        <span className="w-5 text-center font-bold num" aria-live="polite">{q}</span>
+                        <button className="btn !p-1.5 !rounded-full" aria-label={`Agregar ${e.n}`} disabled={q >= mx} onClick={() => set(q + 1)}><Icon n="plus" size={14} /></button>
+                      </div>
+                    </div>
+                  );
+                })}</div>
+              </div>
+
+              <div className="card p-4 flex flex-wrap items-center gap-3 justify-between" style={{ position: 'sticky', bottom: 8 }}>
+                <div className="flex items-center gap-2"><button className="btn !p-2 !rounded-full" aria-label="Menos" onClick={() => setDish((x) => ({ ...x, qty: Math.max(1, x.qty - 1) }))}><Icon n="minus" size={14} /></button><b className="num w-5 text-center">{dish.qty}</b><button className="btn !p-2 !rounded-full" aria-label="Más" onClick={() => setDish((x) => ({ ...x, qty: Math.min(9, x.qty + 1) }))}><Icon n="plus" size={14} /></button></div>
+                <button className="btn btn-p flex-1 !py-3 text-base min-w-[200px]" onClick={addToCart}>Agregar al carrito · <span className="num">{S(unit * dish.qty)}</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  })();
+
+  /* ---- drawer ---- */
+  const drawerView = drawer && (
+    <div className="overlay" onClick={() => setDrawer(false)}>
+      <aside role="dialog" aria-modal="true" aria-label="Carrito" className="slide absolute right-0 top-0 bottom-0 w-full flex flex-col" style={{ maxWidth: 440, background: 'var(--bg)', paddingTop: 'env(safe-area-inset-top,0px)', paddingRight: 'env(safe-area-inset-right,0px)' }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center p-4" style={{ borderBottom: '1px solid var(--line)' }}><h2 className="display text-xl font-bold">Tu pedido <span className="muted text-base">({cartCount})</span></h2><button className="btn !p-2" onClick={() => setDrawer(false)} aria-label="Cerrar carrito"><Icon n="x" /></button></div>
+        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+          {cart.length === 0 && <div className="text-center py-16 muted"><Icon n="bag" size={40} className="mx-auto mb-3 opacity-50" /><p>Tu carrito está vacío.</p><button className="btn mt-4" onClick={() => { setDrawer(false); setView('carta'); }}>Ver la carta</button></div>}
+          {cart.map((it) => (
+            <div key={it.uid} className="card p-3">
+              <div className="flex justify-between gap-2"><div className="min-w-0"><div className="font-bold leading-tight">{it.name}</div><div className="text-xs muted">{it.day} · {lineName(it.line)}</div></div><b className="num">{S(unitPrice(it) * it.qty)}</b></div>
+              {it.notes.length > 0 && <ul className="text-xs muted mt-2 flex flex-col gap-0.5">{it.notes.map((n, i) => <li key={i}>{n}</li>)}</ul>}
+              <div className="text-xs num mt-2 flex flex-wrap gap-x-3"><span>{r0(it.n.k)} kcal</span><span>P {r0(it.n.p)} g</span><span>C {r0(it.n.c)} g</span><span>G {r0(it.n.g)} g</span></div>
+              <div className="flex justify-between items-center mt-2">
+                <div className="flex items-center gap-1.5"><button className="btn !p-1.5 !rounded-full" aria-label="Menos" onClick={() => setQty(it.uid, it.qty - 1)}><Icon n="minus" size={13} /></button><b className="num w-5 text-center">{it.qty}</b><button className="btn !p-1.5 !rounded-full" aria-label="Más" onClick={() => setQty(it.uid, it.qty + 1)}><Icon n="plus" size={13} /></button></div>
+                <button className="text-xs font-semibold flex items-center gap-1" style={{ color: 'var(--danger)' }} onClick={() => setQty(it.uid, 0)}><Icon n="trash" size={14} />Quitar</button>
+              </div>
+            </div>
+          ))}
+        </div>
+        {cart.length > 0 && (
+          <div className="p-4 flex flex-col gap-3" style={{ borderTop: '1px solid var(--line)', background: 'var(--surface)', paddingBottom: 'max(16px,env(safe-area-inset-bottom,0px))' }}>
+            <div><div className="lbl mb-1">Macros totales del pedido</div><NutRow n={cartNut} /></div>
+            {mode === 'plan' && <div className="text-xs chip chip-m !rounded-lg">Plan semanal: {mainCount} de 5 platos. {mainCount < 5 ? 'Completa 5 para el precio de S/ 65.00.' : 'Plan completo.'}</div>}
+            <div className="flex justify-between items-baseline"><span className="font-semibold">Subtotal</span><span className="display text-2xl font-extrabold num">{S(cartTotal)}</span></div>
+            <button className="btn btn-p !py-3 text-base" onClick={() => { setDrawer(false); setTicket(null); setView('checkout'); }}>Elegir franja y pagar <Icon n="arrow" size={16} /></button>
+          </div>
+        )}
+      </aside>
+    </div>
+  );
+
+  /* ---- checkout ---- */
+  const checkout = (
+    <div className="pop py-8">
+      {ticket ? (
+        <div>
+          <div className="grid md:grid-cols-[auto_1fr] gap-6 card p-6" style={{ borderColor: 'var(--grn)' }}>
+            <div className="flex flex-col items-center gap-3"><QR text={`BIENSERVIDO|${ticket.code}|${SLOTS[ticket.slot]}`} /><div className="display text-xl font-extrabold num tracking-wider">{ticket.code}</div></div>
+            <div className="min-w-0">
+              <span className="chip chip-g"><Icon n="check" size={13} />Pase QR de recojo</span>
+              <h2 className="display text-3xl font-extrabold mt-2">¡Listo, {ticket.name.split(' ')[0]}!</h2>
+              <p className="muted text-sm">UTEC {ticket.ucode} · {MODES[ticket.mode].name}</p>
+              <p className="mt-2 flex items-start gap-2"><span style={{ color: 'var(--pri)' }}><Icon n="pin" size={18} /></span><span>Presenta este QR en el <b>Módulo Piso 1 UTEC</b>, franja <b>{SLOTS[ticket.slot]}</b>. Te entregamos en menos de 1 minuto.</span></p>
+              {ticket.pay === 'efectivo' && <p className="chip chip-m mt-2">Pagas en efectivo en el punto. Tu plato se reserva máximo 10 minutos.</p>}
+              <ul className="mt-3 text-sm flex flex-col gap-1">{ticket.items.map((i) => <li key={i.uid} className="flex justify-between gap-3"><span>{i.qty} × {i.name}{i.notes.length ? <span className="muted"> ({i.notes.join(', ')})</span> : null}</span><b className="num">{S(i.unit * i.qty)}</b></li>)}</ul>
+              <div className="flex justify-between mt-3 pt-3 font-bold text-lg num" style={{ borderTop: '1px solid var(--line)' }}><span>Total {ticket.pay === 'efectivo' ? 'a pagar en punto' : 'pagado (simulado)'}</span><span>{S(ticket.total)}</span></div>
+              <div className="mt-4 p-4 rounded-xl" style={{ border: '2px solid var(--fg)' }}>
+                <div className="display text-lg font-extrabold">Información nutricional del pedido</div>
+                <div className="flex justify-between items-end py-2 num" style={{ borderBottom: '6px solid var(--fg)' }}><span className="font-bold">Energía</span><span className="display text-3xl font-extrabold">{r0(ticket.nut.k)} kcal</span></div>
+                {[['Proteína', r1(ticket.nut.p) + ' g'], ['Carbohidratos', r1(ticket.nut.c) + ' g'], ['Grasas', r1(ticket.nut.g) + ' g'], ['Fibra', r1(ticket.nut.f) + ' g']].map(([a, b]) => <div key={a} className="flex justify-between py-1.5 text-sm num" style={{ borderBottom: '1px solid var(--line)' }}><span>{a}</span><b>{b}</b></div>)}
+              </div>
+            </div>
+          </div>
+          <button className="btn btn-p mt-6" onClick={() => { setTicket(null); setSlot(null); setView('carta'); }}>Volver a la carta</button>
+        </div>
+      ) : (
+        <div className="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
+          <div className="flex flex-col gap-5 min-w-0">
+            <h2 className="display text-3xl font-bold">Finaliza tu pedido</h2>
+            <section className="card p-5"><div className="flex justify-between flex-wrap gap-2"><h3 className="font-bold">1. Franja de recojo · Piso 1 UTEC</h3><span className="chip chip-g"><Icon n="clock" size={13} />11:00 a.m. – 6:00 p.m.</span></div>
+              <p className="text-sm muted mt-1">Ventanas de 30 minutos. Sin límite de pedidos por franja: puedes recoger junto a otros estudiantes.</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-3">{SLOTS.map((s, i) => <button key={s} aria-pressed={slot === i} onClick={() => setSlot(i)} className={'soft p-3 text-sm font-semibold num ' + (slot === i ? 'sel' : '')}>{s}</button>)}</div>
+              {touched && errs.slot && <p className="text-xs mt-2" style={{ color: 'var(--danger)' }}>{errs.slot}</p>}</section>
+            <section className="card p-5 grid sm:grid-cols-2 gap-4"><h3 className="font-bold sm:col-span-2">2. Tus datos</h3>
+              <div className="sm:col-span-2"><label htmlFor="f-name" className="text-sm font-semibold">Nombre completo</label><input id="f-name" className="inp mt-1" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />{touched && errs.name && <p className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{errs.name}</p>}</div>
+              <div><label htmlFor="f-code" className="text-sm font-semibold">Código UTEC</label><input id="f-code" inputMode="numeric" className="inp mt-1 num" placeholder="202310123" value={form.ucode} onChange={(e) => setForm({ ...form, ucode: e.target.value.replace(/\D/g, '').slice(0, 9) })} />{touched && errs.ucode && <p className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{errs.ucode}</p>}</div>
+              <div><label htmlFor="f-phone" className="text-sm font-semibold">WhatsApp</label><input id="f-phone" inputMode="numeric" className="inp mt-1 num" placeholder="987654321" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 9) })} />{touched && errs.phone && <p className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{errs.phone}</p>}</div></section>
+            <section className="card p-5"><h3 className="font-bold mb-3">3. Medio de pago</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">{[['yape', 'Yape'], ['plin', 'Plin'], ['tarjeta', 'Tarjeta'], ['efectivo', 'Efectivo en punto']].map(([k, n]) => { const off = k === 'efectivo' && mode !== 'mismo'; return <button key={k} disabled={off} aria-pressed={pay === k} onClick={() => setPay(k)} className={'soft p-3 text-sm font-semibold ' + (pay === k ? 'sel' : '')} style={off ? { opacity: 0.45, cursor: 'not-allowed' } : null}>{n}{off && <div className="text-[10px] muted font-normal">solo mismo día</div>}</button>; })}</div>
+              {pay === 'efectivo' ? <p className="chip chip-m mt-3">Pagas al recoger. Tu plato se reserva máximo 10 minutos.</p> : <p className="text-sm muted mt-3">Simulación: no se procesa ningún pago real ni se piden datos de tarjeta.</p>}</section>
+          </div>
+          <aside className="card p-5 flex flex-col gap-3 lg:sticky" style={{ top: 90 }}>
+            <h3 className="display text-xl font-bold">Tu pedido</h3>
+            {cart.length === 0 && <p className="muted text-sm">Tu carrito está vacío.</p>}
+            {cart.map((i) => <div key={i.uid} className="text-sm"><div className="flex justify-between gap-2"><span>{i.qty} × {i.name}</span><b className="num">{S(unitPrice(i) * i.qty)}</b></div>{i.notes.length > 0 && <div className="text-xs muted">{i.notes.join(' · ')}</div>}</div>)}
+            <NutRow n={cartNut} />
+            <div className="flex justify-between items-baseline pt-3" style={{ borderTop: '1px solid var(--line)' }}><span className="font-semibold">Total</span><span className="display text-3xl font-extrabold num">{S(cartTotal)}</span></div>
+            <button className="btn btn-p !py-3 text-base" disabled={!cart.length} onClick={confirmOrder}>Confirmar y generar mi QR</button>
+            {touched && !formOk && <p className="text-xs" style={{ color: 'var(--danger)' }}>Revisa los campos marcados.</p>}
+            <button className="btn" onClick={() => setView('carta')}>← Seguir pidiendo</button>
+          </aside>
+        </div>
+      )}
+    </div>
+  );
+
+  /* ---- calculadora ---- */
+  const kpi = (label, big, unit, sub) => (<div className="card p-5"><div className="lbl">{label}</div><div className="flex items-end gap-2 mt-2 num"><span className="display text-4xl font-extrabold">{big}</span><span className="muted pb-1.5 text-sm">{unit}</span></div><div className="text-xs muted mt-1">{sub}</div></div>);
+  const lunchPct = lunchK > 0 ? (pt.k / lunchK) * 100 : 0;
+  const cur = ING[pickId];
+  const calcView = (
+    <div className="pop py-8 flex flex-col gap-6">
+      <div><span className="chip chip-m"><Icon n="calc" size={13} />Línea personalizada</span><h2 className="display text-3xl md:text-4xl font-extrabold mt-2">Arma tu almuerzo por macros</h2><p className="muted">Calculadora TDEE (Mifflin-St Jeor). Tu almuerzo debe aportar el 35% de tu meta del día.</p></div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpi('TMB base', r0(tmb).toLocaleString('es-PE'), 'kcal/día', 'Mifflin-St Jeor, en reposo')}
+        {kpi('TDEE mantenimiento', r0(tdee).toLocaleString('es-PE'), 'kcal/día', `TMB × ${act}`)}
+        {kpi('Meta calórica diaria', r0(meta).toLocaleString('es-PE'), 'kcal/día', `TDEE × (1 ${adj >= 0 ? '+' : '−'} ${Math.abs(adj)}%)`)}
+        <div className="card p-5" style={{ borderColor: 'var(--pri)' }}><div className="lbl">Meta de tu almuerzo (35%) vs plato armado</div>
+          <div className="flex items-end gap-2 mt-2 num"><span className="display text-4xl font-extrabold" style={{ color: 'var(--pri)' }}>{r0(pt.k)}</span><span className="muted pb-1.5 text-sm">/ {r0(lunchK)} kcal</span></div>
+          <div className="bar mt-2"><i style={{ width: clamp(lunchPct, 0, 100) + '%', background: lunchPct > 108 ? 'var(--danger)' : 'var(--pri)' }} /></div><div className="text-xs muted mt-1 num">{r0(lunchPct)}% de la meta</div></div>
+      </div>
+      <div className="grid lg:grid-cols-[2fr_3fr] gap-5">
+        <section className="card p-5 flex flex-col gap-5"><h3 className="display text-xl font-bold">Perfil biométrico</h3>
+          <div><div className="lbl mb-2">Sexo</div><div className="flex gap-2" role="radiogroup" aria-label="Sexo">{[['H', 'Hombre'], ['M', 'Mujer']].map(([k, n]) => <button key={k} role="radio" aria-checked={sex === k} className={'btn flex-1 ' + (sex === k ? 'btn-p' : '')} onClick={() => setSex(k)}>{n}</button>)}</div></div>
+          {[['Edad', 'c-age', age, 16, 60, 1, setAge, ' años'], ['Peso', 'c-weight', weight, 40, 140, 0.5, setWeight, ' kg'], ['Altura', 'c-height', height, 140, 210, 1, setHeight, ' cm']].map(([n, id, v, lo, hi, st, fn, u]) => (
+            <div key={id}><div className="flex justify-between"><label htmlFor={id} className="lbl">{n}</label><b className="num">{id === 'c-weight' ? Number(v).toFixed(1) : v}{u}</b></div><input id={id} type="range" min={lo} max={hi} step={st} value={v} onChange={(e) => fn(Number(e.target.value))} /></div>))}
+          <div><label htmlFor="c-act" className="lbl">Factor de actividad</label><select id="c-act" className="inp mt-1" value={act} onChange={(e) => setAct(Number(e.target.value))}>{ACTIVITY.map(([n, f, lab]) => <option key={f} value={f}>{n} ({lab})</option>)}</select></div>
+          <div><div className="flex justify-between"><label htmlFor="c-adj" className="lbl">Objetivo calórico</label><b className="num">{adj > 0 ? '+' : ''}{adj}% <span className="muted font-normal">({adj < 0 ? 'Déficit' : adj > 0 ? 'Superávit' : 'Mantenimiento'})</span></b></div><input id="c-adj" type="range" min="-25" max="20" step="1" value={adj} onChange={(e) => setAdj(Number(e.target.value))} /><div className="flex justify-between text-[11px] muted"><span>−25% déficit</span><span>+20% superávit</span></div></div>
+          <div><label htmlFor="c-mac" className="lbl">Distribución de macronutrientes</label><select id="c-mac" className="inp mt-1" value={macro} onChange={(e) => setMacro(e.target.value)}>{Object.entries(MACROS).map(([k, v]) => <option key={k} value={k}>{v.name} ({v.p}% P / {v.c}% C / {v.g}% G)</option>)}</select></div>
+        </section>
+        <section className="card p-5 flex flex-col gap-5"><h3 className="display text-xl font-bold">Balance y macronutrientes del almuerzo</h3>
+          <div className="grid sm:grid-cols-[auto_1fr] gap-6 items-center">
+            <div className="flex justify-center"><Donut p={shares.p} c={shares.c} g={shares.g} center={kM > 0 ? r0(pt.k) : r0(lunchK)} sub={kM > 0 ? 'kcal en tu plato' : 'kcal meta (sin plato)'} /></div>
+            <ul className="flex flex-col gap-2 text-sm num">{[['Prot', 'var(--prot)', shares.p, dist.p, pt.p], ['Carb', 'var(--carb)', shares.c, dist.c, pt.c], ['Grasa', 'var(--fat)', shares.g, dist.g, pt.g]].map(([n, col, s, d, g]) => <li key={n} className="flex items-center gap-3"><span className="w-3 h-3 rounded-full shrink-0" style={{ background: col }} /><span className="font-semibold w-12">{n}</span><b>{r0(s)}%</b><span className="muted">meta {d}% · {r0(g)} g</span></li>)}</ul></div>
+          <div className="flex flex-col gap-4"><MacroBar label="Proteínas · 4 kcal/g" color="var(--prot)" have={pt.p} goal={tgt.p} /><MacroBar label="Carbohidratos · 4 kcal/g" color="var(--carb)" have={pt.c} goal={tgt.c} /><MacroBar label="Grasas · 9 kcal/g" color="var(--fat)" have={pt.g} goal={tgt.g} /></div>
+        </section>
+      </div>
+      <section className="card p-5 md:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="display text-xl font-bold">Armador por gramos</h3><p className="text-sm muted">Cocina aliada con balanza: eliges el ingrediente y los gramos exactos.</p></div>{example && <span className="chip chip-m">Plato de ejemplo, edítalo</span>}</div>
+        <div className="flex flex-wrap gap-2 mt-4" role="tablist">{Object.entries(CATS).map(([k, v]) => <button key={k} role="tab" aria-selected={pickCat === k} className="tab" onClick={() => { setPickCat(k); setPickId(Object.values(ING).find((i) => i.cat === k).id); }}>{v.name}</button>)}</div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3">{Object.values(ING).filter((i) => i.cat === pickCat).map((i) => <button key={i.id} onClick={() => setPickId(i.id)} aria-pressed={pickId === i.id} className={'soft p-2.5 text-left flex items-center gap-3 ' + (pickId === i.id ? 'sel' : '')}><IngIcon k={i.id} size={44} /><div className="min-w-0"><div className="font-semibold text-sm">{i.n}</div><div className="text-xs muted num">{i.k} kcal · P {i.p} · C {i.c} · G {i.g} /100 g</div></div></button>)}</div>
+        <div className="flex flex-wrap items-end gap-3 mt-4">
+          <div style={{ width: 130 }}><label htmlFor="pick-g" className="lbl">Gramos</label><input id="pick-g" type="number" min="1" max="1000" className="inp mt-1 num" value={pickG} onChange={(e) => setPickG(e.target.value)} onFocus={(e) => e.target.select()} /></div>
+          <div className="text-sm muted num pb-2">{cur.n}: <b style={{ color: 'var(--fg)' }}>{r0(cur.k * (Number(pickG) || 0) / 100)} kcal</b> · {r1(cur.p * (Number(pickG) || 0) / 100)} g P</div>
+          <button className="btn btn-p ml-auto" onClick={addIng}><Icon n="plus" size={16} />Agregar a mi almuerzo</button></div>
+        <div className="overflow-x-auto mt-5"><table style={{ minWidth: 640 }}>
+          <thead><tr><th>Ingrediente</th><th style={{ width: 110 }}>Gramos</th><th>Kcal</th><th>P</th><th>C</th><th>G</th><th style={{ width: 44 }}><span className="sr-only">Quitar</span></th></tr></thead>
+          <tbody className="num">{plate.length === 0 && <tr><td colSpan="7" className="muted text-center py-6">Tu plato está vacío. Elige un ingrediente y agrégalo.</td></tr>}
+            {plate.map((r) => { const i = ING[r.id], f = r.g / 100; return (<tr key={r.id}><td className="font-semibold"><span className="flex items-center gap-2"><IngIcon k={i.id} size={32} />{i.n}</span></td><td><input aria-label={`Gramos de ${i.n}`} type="number" min="0" max="1000" className="inp num" style={{ padding: '5px 8px' }} value={r.g} onChange={(e) => setGrams(r.id, e.target.value)} onFocus={(e) => e.target.select()} /></td><td>{r0(i.k * f)}</td><td>{r1(i.p * f)}</td><td>{r1(i.c * f)}</td><td>{r1(i.g * f)}</td><td><button className="btn !p-1.5" aria-label={`Quitar ${i.n}`} onClick={() => setPlate((pl) => pl.filter((x) => x.id !== r.id))}><Icon n="x" size={14} /></button></td></tr>); })}</tbody>
+          {plate.length > 0 && <tfoot className="num"><tr style={{ background: 'var(--surface2)' }}><td className="font-bold">Total del plato</td><td className="font-bold">{r0(pt.grams)} g</td><td className="font-bold">{r0(pt.k)}</td><td className="font-bold">{r1(pt.p)}</td><td className="font-bold">{r1(pt.c)}</td><td className="font-bold">{r1(pt.g)}</td><td /></tr></tfoot>}</table></div>
+        <div className="grid md:grid-cols-[1fr_auto] gap-5 items-end mt-5">
+          <div className="text-sm num flex flex-col gap-1 max-w-sm"><div className="lbl mb-1">Precio de tu plato</div>
+            <div className="flex justify-between gap-6"><span className="muted">Base ({MODES[mode].name.toLowerCase()})</span><span>{plate.length ? S(base) : S(0)}</span></div>
+            <div className="flex justify-between gap-6"><span className="muted">Ajuste por exceso de gramaje</span><span>+ {S(plateAdj)}</span></div>
+            <div className="flex justify-between gap-6 font-bold text-lg pt-1" style={{ borderTop: '1px solid var(--line)' }}><span>Total</span><span style={{ color: 'var(--pri)' }}>{S(plate.length ? base + plateAdj : 0)}</span></div>
+            <div className="text-xs muted mt-1">Gramaje estándar: proteína {CATS.prot.std} g · carbos y menestras {CATS.carb.std} g · verduras y grasas {CATS.veg.std} g. El exceso se cobra a prorrata.</div></div>
+          <button className="btn btn-p !py-3" disabled={!plate.length || pt.k <= 0} onClick={addCustom}><Icon n="bag" size={16} />Agregar mi plato personalizado al carrito</button>
+        </div>
+      </section>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen">
+      {header}
+      <main className="wrap">{view === 'carta' && carta}{view === 'extras' && extrasView}{view === 'calc' && calcView}{view === 'checkout' && checkout}</main>
+      <footer className="wrap pb-10 pt-4 text-xs muted">Bien Servido · Módulo Piso 1 UTEC, Lima · Los pagos y el QR son simulados.</footer>
+      {dishModal}{drawerView}
+      {toast && <div role="status" className="pop fixed left-1/2 -translate-x-1/2 z-[120] btn btn-p" style={{ bottom: 'max(20px, env(safe-area-inset-bottom,0px))' }}><Icon n="check" size={16} />{toast}</div>}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+</body>
+</html>
