@@ -229,8 +229,8 @@ function customPrice(plate) {
 const ACTIVITY = [['Sedentario', 1.2, '1.20'], ['Ligeramente activo', 1.375, '1.375'], ['Moderadamente activo', 1.55, '1.55'], ['Muy activo', 1.725, '1.725'], ['Atleta / Extremo', 1.9, '1.90']];
 const MACROS = { eq: { name: 'Equilibrado', p: 25, c: 45, g: 30 }, hip: { name: 'Hipertrofia', p: 25, c: 50, g: 25 }, def: { name: 'Definición', p: 35, c: 35, g: 30 }, rend: { name: 'Rendimiento', p: 20, c: 55, g: 25 } };
 const MODES = {
-  anticipado: { name: 'Pedido anticipado', price: 13.9, sub: 'Hasta las 9:00 p.m. del día anterior', unit: 'por plato', badge: 'Recomendado' },
-  mismo: { name: 'Pedido del mismo día', price: 14.9, sub: 'Stock limitado en vivo', unit: 'por plato', badge: '' },
+  anticipado: { name: 'Pedido anticipado', price: 13.9, sub: 'Se aplica al elegir un día futuro. Pide hasta las 9:00 p.m. del día anterior.', unit: 'por plato', badge: 'Recomendado' },
+  mismo: { name: 'Pedido del mismo día', price: 14.9, sub: 'Se aplica al elegir hoy. Sujeto al stock disponible.', unit: 'por plato', badge: '' },
 };
 const hhmm = (mins) => { const h = Math.floor(mins / 60), mm = String(mins % 60).padStart(2, '0'); return `${h % 12 === 0 ? 12 : h % 12}:${mm} ${h < 12 ? 'a.m.' : 'p.m.'}`; };
 const SLOTS = Array.from({ length: 14 }, (_, i) => `${hhmm(660 + i * 30)} – ${hhmm(690 + i * 30)}`);
@@ -256,6 +256,8 @@ function lunchDate(dayIdx, mode, now = new Date()) {
   if (diff === 1 && now.getHours() >= CUTOFF_H) return { ok: false, why: 'El pedido anticipado para mañana cerró a las 9:00 p.m. Elige otro día.' };
   return mkDate(dt, false);
 }
+/* Tarifa automática: si el día elegido es hoy (y aún hay atención) aplica "mismo día"; si es un día futuro, "anticipado" */
+function autoMode(dayIdx, now = new Date()) { return wdOf(now) === dayIdx && now.getHours() < CLOSE_H ? 'mismo' : 'anticipado'; }
 function extraDate(dayIdx, now = new Date()) {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   if (wdOf(today) === dayIdx && now.getHours() < CLOSE_H) return mkDate(today, true);
@@ -483,8 +485,8 @@ const NutRow = ({ n, big }) => (
 function App() {
   const todayIdx = (() => { const d = new Date().getDay(); return d >= 1 && d <= 5 ? d - 1 : 0; })();
   const [view, setView] = useState('carta'); // carta | calc | checkout
-  const [mode, setMode] = useState('anticipado');
   const [day, setDay] = useState(todayIdx);
+  const mode = autoMode(day);
   const [cat, setCat] = useState('all');
   const [stock, setStock] = useState(12);
   const [cart, setCart] = useState([]);
@@ -654,14 +656,17 @@ function App() {
   );
 
   const modeBar = (
-    <div className="grid md:grid-cols-2 gap-3" role="radiogroup" aria-label="Modalidad de pedido">
-      {Object.entries(MODES).map(([k, v]) => (
-        <button key={k} role="radio" aria-checked={mode === k} onClick={() => setMode(k)} className={'card p-4 text-left ' + (mode === k ? 'sel' : '')}>
-          <div className="flex justify-between items-start gap-2"><span className="font-bold">{v.name}</span>{v.badge && <span className="chip chip-m">{v.badge}</span>}{k === 'mismo' && <span className="chip chip-p num">Quedan {stock} platos hoy</span>}</div>
-          <div className="flex items-baseline gap-2 mt-1"><span className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>{S(v.price)}</span><span className="text-xs muted">{v.unit}</span></div>
-          <div className="text-xs muted mt-0.5">{v.sub}</div>
-        </button>
-      ))}
+    <div>
+      <p className="text-sm muted mb-2">Tarifas: el precio se asigna automáticamente según el día que elijas en el calendario.</p>
+      <div className="grid md:grid-cols-2 gap-3" aria-label="Tarifas por tipo de pedido">
+        {Object.entries(MODES).map(([k, v]) => (
+          <div key={k} className="card p-4">
+            <div className="flex justify-between items-start gap-2"><span className="font-bold">{v.name}</span>{v.badge && <span className="chip chip-m">{v.badge}</span>}{k === 'mismo' && <span className="chip chip-p num">Quedan {stock} platos hoy</span>}</div>
+            <div className="flex items-baseline gap-2 mt-1"><span className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>{S(v.price)}</span><span className="text-xs muted">{v.unit}</span></div>
+            <div className="text-xs muted mt-0.5">{v.sub}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 
@@ -725,10 +730,10 @@ function App() {
         <div className="mt-6">{modeBar}</div>
       </section>
       <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Día">
-        {DAYS.map((d, i) => { const r = lunchDate(i, mode); return <button key={d} role="tab" className="tab" aria-selected={day === i} onClick={() => setDay(i)} style={r.ok ? null : { opacity: 0.55 }}>{r.ok ? r.label : d}{r.ok && r.isToday ? ' · hoy' : ''}</button>; })}
+        {DAYS.map((d, i) => { const r = lunchDate(i, autoMode(i)); return <button key={d} role="tab" className="tab" aria-selected={day === i} onClick={() => setDay(i)} style={r.ok ? null : { opacity: 0.55 }}>{r.ok ? r.label : d}{r.ok && r.isToday ? ' · hoy' : ''}</button>; })}
       </div>
       {(() => { const r = lunchDate(day, mode); return r.ok
-        ? <p className="text-sm muted mt-2">Entrega: <b style={{ color: 'var(--fg)' }}>{r.label}</b> · {MODES[mode].name}{mode === 'mismo' ? ` · quedan ${stock - mismoInCart} platos` : ''}</p>
+        ? <p className="text-sm muted mt-2">Entrega: <b style={{ color: 'var(--fg)' }}>{r.label}</b> · {MODES[mode].name} (<b style={{ color: 'var(--pri)' }}>{S(base)}</b>){mode === 'mismo' ? ` · quedan ${stock - mismoInCart} platos` : ''}</p>
         : <p className="chip chip-m mt-2">{r.why}</p>; })()}
       <div className="flex gap-2 overflow-x-auto mt-3 pb-1" role="tablist" aria-label="Categoría">
         {[['all', 'Todos'], ...Object.entries(LINES).map(([k, v]) => [k, v.name])].map(([k, n]) => <button key={k} role="tab" className="tab" aria-selected={cat === k} onClick={() => setCat(k)}>{n}</button>)}
