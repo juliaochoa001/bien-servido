@@ -215,17 +215,16 @@ const ING = {
   frejoles: { id: 'frejoles', n: 'Frejoles', short: 'frejoles', cat: 'carb', k: 135, p: 8.5, c: 24, g: 1.2, f: 6.4 },
   mix: { id: 'mix', n: 'Mix de ensalada y verduras al vapor', short: 'verduras', cat: 'veg', k: 35, p: 1.8, c: 7, g: 0.2, f: 2.6 },
   palta: { id: 'palta', n: 'Palta / Aguacate', short: 'palta', cat: 'veg', k: 160, p: 2, c: 8.5, g: 14.7, f: 6.7 },
-  aceite: { id: 'aceite', n: 'Aceite de oliva / aliño ligero', short: 'aceite', cat: 'veg', k: 884, p: 0, c: 0, g: 100, f: 0 },
 };
 const CATS = { prot: { name: 'Proteínas', std: 120 }, carb: { name: 'Carbohidratos y menestras', std: 150 }, veg: { name: 'Verduras y grasas saludables', std: 150 } };
 /* Menú personalizado: porciones incluidas en el precio base y máximo (estándar + 150 g) por grupo */
-const GROUP = { pollo: 'prot', pescado: 'prot', res: 'prot', tofu: 'prot', huevo: 'prot', quinua: 'carb', arroz: 'carb', camote: 'carb', papa: 'carb', lentejas: 'carb', frejoles: 'carb', mix: 'veg', palta: 'palta', aceite: 'aceite' };
-const GSTD = { prot: 120, carb: 150, veg: 150, palta: 0, aceite: 10 };
-const GMAX = { prot: 270, carb: 300, veg: 300, palta: 150, aceite: 10 };
-const GNAME = { prot: 'proteína', carb: 'carbohidratos', veg: 'verduras', palta: 'palta', aceite: 'aceite' };
+const GROUP = { pollo: 'prot', pescado: 'prot', res: 'prot', tofu: 'prot', huevo: 'prot', quinua: 'carb', arroz: 'carb', camote: 'carb', papa: 'carb', lentejas: 'carb', frejoles: 'carb', mix: 'veg', palta: 'palta' };
+const GSTD = { prot: 120, carb: 150, veg: 150, palta: 0 };
+const GMAX = { prot: 270, carb: 300, veg: 300, palta: 150 };
+const GNAME = { prot: 'proteína', carb: 'carbohidratos', veg: 'verduras', palta: 'palta' };
 const blocks = (x) => (x > 0 ? Math.ceil(x / BLOCK_G - 1e-9) : 0);
 function customPrice(plate) {
-  const tot = { prot: 0, carb: 0, veg: 0, palta: 0, aceite: 0 };
+  const tot = { prot: 0, carb: 0, veg: 0, palta: 0 };
   plate.forEach((r) => { tot[GROUP[r.id]] += r.g; });
   const prem = plate.some((r) => PREMIUM[r.id] && r.g > 0);
   const bd = { prem: prem ? SUP.swap : 0, porc: 0, beb: 0 };
@@ -248,7 +247,7 @@ const hhmm = (mins) => { const h = Math.floor(mins / 60), mm = String(mins % 60)
 const SLOTS = Array.from({ length: 14 }, (_, i) => `${hhmm(660 + i * 30)} – ${hhmm(690 + i * 30)}`);
 /* Stock simulado del día: ingredientes en gramos (porciones extra, sustituciones y armador) y complementos en unidades */
 const INV0 = {
-  pollo: 6000, pescado: 4000, res: 0, tofu: 3000, huevo: 3000, quinua: 8000, arroz: 8000, camote: 3000, papa: 3000, lentejas: 3000, frejoles: 3000, mix: 8000, palta: 150, aceite: 1000,
+  pollo: 6000, pescado: 4000, res: 0, tofu: 3000, huevo: 3000, quinua: 8000, arroz: 8000, camote: 3000, papa: 3000, lentejas: 3000, frejoles: 3000, mix: 8000, palta: 150,
   s1: 8, s2: 6, s3: 5, p1: 12, p2: 0, p3: 4, beb0: 30, beb1: 30, beb2: 30, beb3: 30, beb4: 30,
 };
 /* Fechas de entrega: anticipado = próximo día elegido (cierra 9:00 p.m. del día anterior); mismo día = solo hoy */
@@ -597,7 +596,7 @@ function App() {
     const grp = GROUP[id]; const others = pl.filter((r) => r.id !== id && GROUP[r.id] === grp).reduce((s, r) => s + r.g, 0);
     return Math.max(0, Math.min(GMAX[grp] - others, avail(id)));
   };
-  const limitMsg = (id, m) => (avail(id) <= 0 ? `Agotado hoy: ${ING[id].short}.` : m >= avail(id) ? `Solo quedan ${avail(id)} g de ${ING[id].short}.` : GROUP[id] === 'aceite' ? 'El aliño se limita a 10 g.' : `Máximo ${GMAX[GROUP[id]]} g de ${GNAME[GROUP[id]]} (150 g adicionales).`);
+  const limitMsg = (id, m) => (avail(id) <= 0 ? `Agotado hoy: ${ING[id].short}.` : m >= avail(id) ? `Solo quedan ${avail(id)} g de ${ING[id].short}.` : `Máximo ${GMAX[GROUP[id]]} g de ${GNAME[GROUP[id]]} (150 g adicionales).`);
   const kM = pt.p * 4 + pt.c * 4 + pt.g * 9;
   const shares = kM > 0 ? { p: (pt.p * 4 / kM) * 100, c: (pt.c * 4 / kM) * 100, g: (pt.g * 9 / kM) * 100 } : { p: dist.p, c: dist.c, g: dist.g };
   const addIng = () => {
