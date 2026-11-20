@@ -111,18 +111,18 @@ const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 const gOf = (d) => Math.max(0, (d.k - 4 * d.p - 4 * d.c) / 9);
 const MENU = {
   criollo: [
-    { n: 'Ají de gallina light', d: 'Pollo deshilachado en cremosa salsa de ají amarillo, con arroz integral y ensalada fresca. Se sirve caliente, como en casa.', k: 720, p: 36, c: 88, f: 10 },
-    { n: 'Seco de pollo con frejoles', d: 'Pollo jugoso en seco de culantro, frejoles canarios suaves y arroz integral graneado.', k: 760, p: 38, c: 94, f: 12 },
-    { n: 'Lomo saltado al wok', d: 'Res magra salteada al wok con cebolla, tomate y ají, papas doradas al horno y arroz integral.', k: 750, p: 37, c: 90, f: 9 },
-    { n: 'Pollo al horno con puré de camote', d: 'Pollo al horno aromático, puré de camote sedoso y ensalada fresca de la casa.', k: 690, p: 35, c: 86, f: 10 },
-    { n: 'Arroz con pollo integral', d: 'Arroz integral al culantro con pollo tierno, verduras salteadas y ensalada fresca.', k: 730, p: 34, c: 92, f: 11 },
+    { n: 'Ají de gallina light', d: 'Pollo deshilachado en cremosa salsa de ají amarillo, con arroz integral y ensalada fresca. Se sirve caliente, como en casa.', k: 720, p: 36, c: 88, f: 10, prot: 'pollo' },
+    { n: 'Seco de pollo con frejoles', d: 'Pollo jugoso en seco de culantro, frejoles canarios suaves y arroz integral graneado.', k: 760, p: 38, c: 94, f: 12, prot: 'pollo' },
+    { n: 'Lomo saltado al wok', d: 'Res magra salteada al wok con cebolla, tomate y ají, papas doradas al horno y arroz integral.', k: 750, p: 37, c: 90, f: 9, prot: 'res' },
+    { n: 'Pollo al horno con puré de camote', d: 'Pollo al horno aromático, puré de camote sedoso y ensalada fresca de la casa.', k: 690, p: 35, c: 86, f: 10, prot: 'pollo' },
+    { n: 'Arroz con pollo integral', d: 'Arroz integral al culantro con pollo tierno, verduras salteadas y ensalada fresca.', k: 730, p: 34, c: 92, f: 11, prot: 'pollo' },
   ],
   bowl: [
-    { n: 'Bowl Andino', sub: 'Quinua, pollo a la plancha, palta, verduras y lentejas', d: 'Quinua esponjosa, pollo a la plancha, palta cremosa, verduras frescas y lentejas.', k: 710, p: 38, c: 84, f: 13, base: 'quinua', rm: ['palta', 'lentejas', 'cebolla', 'tomate'] },
-    { n: 'Bowl Marino', sub: 'Arroz integral, filete de pescado, verduras y garbanzos', d: 'Arroz integral, filete de pescado jugoso, verduras al vapor y garbanzos.', k: 680, p: 35, c: 82, f: 12, base: 'arroz', rm: ['garbanzos', 'brocoli', 'cebolla', 'zanahoria'] },
-    { n: 'Bowl Criollo', sub: 'Quinua, carne magra saltada, verduras y choclo', d: 'Quinua, carne magra saltada con sabor criollo, verduras frescas y choclo tierno.', k: 740, p: 39, c: 90, f: 12, base: 'quinua', rm: ['choclo', 'cebolla', 'tomate', 'zanahoria'] },
-    { n: 'Bowl Clásico', sub: 'Arroz integral, pollo al horno, verduras y frejoles', d: 'Arroz integral, pollo al horno dorado, verduras frescas y frejoles.', k: 720, p: 37, c: 88, f: 11, base: 'arroz', rm: ['frejoles', 'cebolla', 'tomate', 'zanahoria'] },
-    { n: 'Bowl Fresco', sub: 'Quinua, pescado, palta y lentejas', d: 'Quinua, pescado al vapor, palta fresca y lentejas.', k: 695, p: 36, c: 80, f: 11, base: 'quinua', rm: ['palta', 'lentejas', 'tomate', 'cebolla'] },
+    { n: 'Bowl Andino', sub: 'Quinua, pollo a la plancha, palta, verduras y lentejas', d: 'Quinua esponjosa, pollo a la plancha, palta cremosa, verduras frescas y lentejas.', k: 710, p: 38, c: 84, f: 13, base: 'quinua', rm: ['palta', 'lentejas', 'cebolla', 'tomate'], prot: 'pollo' },
+    { n: 'Bowl Marino', sub: 'Arroz integral, filete de pescado, verduras y garbanzos', d: 'Arroz integral, filete de pescado jugoso, verduras al vapor y garbanzos.', k: 680, p: 35, c: 82, f: 12, base: 'arroz', rm: ['garbanzos', 'brocoli', 'cebolla', 'zanahoria'], prot: 'pescado' },
+    { n: 'Bowl Criollo', sub: 'Quinua, carne magra saltada, verduras y choclo', d: 'Quinua, carne magra saltada con sabor criollo, verduras frescas y choclo tierno.', k: 740, p: 39, c: 90, f: 12, base: 'quinua', rm: ['choclo', 'cebolla', 'tomate', 'zanahoria'], prot: 'res' },
+    { n: 'Bowl Clásico', sub: 'Arroz integral, pollo al horno, verduras y frejoles', d: 'Arroz integral, pollo al horno dorado, verduras frescas y frejoles.', k: 720, p: 37, c: 88, f: 11, base: 'arroz', rm: ['frejoles', 'cebolla', 'tomate', 'zanahoria'], prot: 'pollo' },
+    { n: 'Bowl Fresco', sub: 'Quinua, pescado, palta y lentejas', d: 'Quinua, pescado al vapor, palta fresca y lentejas.', k: 695, p: 36, c: 80, f: 11, base: 'quinua', rm: ['palta', 'lentejas', 'tomate', 'cebolla'], prot: 'pescado' },
   ],
   veg: [
     { n: 'Tacu tacu de menestras al horno', d: 'Tacu tacu crocante por fuera y suave por dentro, con ensalada criolla.', k: 680, p: 31, c: 90, f: 15, rm: ['cebolla', 'tomate'] },
@@ -156,14 +156,11 @@ const CREAMS = [
   { n: 'Ají amarillo ligero', k: 45, p: 0.5, c: 4, g: 3, f: 0.3 },
   { n: 'Sin crema', k: 0, p: 0, c: 0, g: 0, f: 0 },
 ];
-const EX = {
-  palta: { id: 'palta', n: 'Porción extra de palta fresca', price: 2.5, k: 120, p: 1.5, c: 6, g: 11, f: 4.5 },
-  prot: { id: 'prot', n: 'Extra proteína (pollo / carne)', price: 3.5, k: 140, p: 25, c: 0, g: 4, f: 0 },
-  hv: { id: 'hv', n: 'Extra huevo / tofu', price: 3.0, k: 140, p: 14, c: 2, g: 9, f: 0.5 },
-  quinua: { id: 'quinua', n: 'Extra quinua y arroz integral', price: 2.0, k: 110, p: 3, c: 21, g: 1.5, f: 2.5 },
-  alfajor: { id: 'alfajor', n: 'Alfajor proteico artesanal (postre)', price: 4.5, k: 180, p: 12, c: 20, g: 7, f: 2 },
-};
-const EXTRAS_BY_LINE = { criollo: ['bebida', 'palta', 'prot', 'quinua'], bowl: ['bebida', 'palta', 'prot', 'quinua'], veg: ['bebida', 'palta', 'hv', 'quinua'] };
+/* Tabla de suplementos (informe): porciones extra en bloques de 50 g, máx. 3 bloques (150 g) por ingrediente */
+const SUP = { swap: 2.5, pollo: 1.5, premium: 2.5, quinua: 1.0, arroz: 1.0, verduras: 0.5, palta: 1.5 };
+const PREMIUM = { pescado: true, res: true };
+const STD_PROT_G = 120, BLOCK_G = 50, MAX_BLOCKS = 3;
+const EXTRAS_BY_LINE = { criollo: ['bebida', 'prot', 'quinua', 'arroz', 'verduras', 'palta'], bowl: ['bebida', 'prot', 'quinua', 'arroz', 'verduras', 'palta'], veg: ['bebida', 'hv', 'quinua', 'arroz', 'verduras', 'palta'] };
 const BEB = [
   { n: 'Refresco de Maracuyá con Hierbaluisa', tag: 'Bajo en azúcar', d: 'Refrescante, cítrico y digestivo.', k: 45, c: 11 },
   { n: 'Infusión Fría de Manzana, Canela y Clavo', tag: 'Sin azúcar añadida', d: 'Dulzor natural de fruta cocida, ideal tras las comidas.', k: 40, c: 10 },
@@ -172,44 +169,99 @@ const BEB = [
   { n: 'Chicha Morada de Maíz Morado (receta baja en azúcar)', tag: 'Bajo en azúcar', d: 'La bebida peruana de siempre: maíz morado, piña, canela y clavo, antioxidante y con poco dulce para cerrar la semana.', k: 40, c: 10 },
 ];
 const BEB_PRICE = 1.5;
-const exOf = (id, day) => (id === 'bebida' ? { id, n: 'Bebida del Día: ' + BEB[day].n, price: BEB_PRICE, k: BEB[day].k, p: 0, c: BEB[day].c, g: 0, f: 0 } : EX[id]);
+const scaled = (id, grams) => { const i = ING[id], m = grams / 100; return { k: i.k * m, p: i.p * m, c: i.c * m, g: i.g * m, f: (i.f || 0) * m }; };
+/* Datos de cada adicional: precio por bloque, máximo, ingrediente de inventario que consume y nutrición por bloque */
+function extraInfo(id, idx, prot) {
+  if (id === 'bebida') return { id, n: 'Bebida del Día: ' + BEB[idx].n, price: BEB_PRICE, max: 1, inv: 'beb' + idx, unit: 1, kind: 'beb', icon: 'bebida', nut: { k: BEB[idx].k, p: 0, c: BEB[idx].c, g: 0, f: 0 } };
+  if (id === 'prot') return { id, n: `+50 g de ${ING[prot].short}`, price: PREMIUM[prot] ? SUP.premium : SUP.pollo, max: MAX_BLOCKS, inv: prot, unit: BLOCK_G, kind: 'porc', icon: prot, nut: scaled(prot, BLOCK_G) };
+  if (id === 'hv') return { id, n: '+50 g de huevo / tofu', price: SUP.pollo, max: MAX_BLOCKS, inv: 'tofu', unit: BLOCK_G, kind: 'porc', icon: 'huevo', nut: scaled('tofu', BLOCK_G) };
+  const [inv, n, price, icon] = { quinua: ['quinua', '+50 g de quinua', SUP.quinua, 'quinua'], arroz: ['arroz', '+50 g de arroz integral', SUP.arroz, 'arroz'], verduras: ['mix', '+50 g de verduras', SUP.verduras, 'ensalada'], palta: ['palta', '+50 g de palta', SUP.palta, 'palta'] }[id];
+  return { id, n, price, max: MAX_BLOCKS, inv, unit: BLOCK_G, kind: 'porc', icon, nut: scaled(inv, BLOCK_G) };
+}
 const SNACKS = [
-  { id: 's1', line: 'snack', n: 'Wrap Integral Crocante de Pollo, Palta y Queso Fresco Light', d: 'Tortilla integral dorada a la plancha rellena de pollo jugoso, láminas cremosas de palta, tomate fresco y salsa de yogur con culantro.', price: 7.5, k: 310, p: 24, c: 26, f: 4.5 },
+  { id: 's1', line: 'snack', n: 'Wrap Integral Crocante de Pollo, Palta y Queso Fresco Light', d: 'Tortilla integral dorada a la plancha rellena de pollo jugoso, láminas cremosas de palta, tomate fresco y salsa de yogur con culantro.', price: 11.0, k: 310, p: 24, c: 26, f: 4.5 },
   { id: 's2', line: 'snack', n: 'Tostón de Masa Madre con Palta, Huevo Pochado y Semillas', d: 'Pan rústico tostado con guacamole recién hecho, huevo cocido a punto tierno, tomates cherry y un toque de ajonjolí.', price: 7.0, k: 295, p: 15, c: 28, f: 5.5 },
-  { id: 's3', line: 'snack', n: 'Copa Parfait de Yogur Griego, Granola y Frutos Rojos', d: 'Capas de yogur griego natural espeso, granola crocante de avena con miel de abeja, fresas frescas y arándanos.', price: 6.5, k: 240, p: 14, c: 27, f: 3 },
+  { id: 's3', line: 'snack', n: 'Copa Parfait de Yogur Griego, Granola y Frutos Rojos', d: 'Capas de yogur griego natural espeso, granola crocante de avena con miel de abeja, fresas frescas y arándanos.', price: 9.0, k: 240, p: 14, c: 27, f: 3 },
 ];
 const POSTRES = [
-  { id: 'p1', line: 'postre', n: 'Alfajor Proteico Artesanal de Avena y Manjar Light', d: 'Galletas suaves de avena y almendras con abundante manjar bajo en azúcar enriquecido con proteína y coco rallado.', price: 4.5, k: 180, p: 12, c: 20, f: 2, star: true, tags: ['Producto estrella'] },
-  { id: 'p2', line: 'postre', n: 'Brownie Fudge Fit de Cacao 70% y Camote', d: 'Cuadrado húmedo e intenso en chocolate oscuro, sin harinas refinadas, endulzado con panela y nueces pecanas crocantes.', price: 5.0, k: 190, p: 6, c: 22, f: 3.5, tags: ['Sin harinas refinadas'] },
+  { id: 'p1', line: 'postre', n: 'Alfajor Proteico Artesanal de Avena y Manjar Light', d: 'Galletas suaves de avena y almendras con abundante manjar bajo en azúcar enriquecido con proteína y coco rallado.', price: 6.0, k: 180, p: 12, c: 20, f: 2, star: true, tags: ['Producto estrella'] },
+  { id: 'p2', line: 'postre', n: 'Brownie Fudge Fit de Cacao 70% y Camote', d: 'Cuadrado húmedo e intenso en chocolate oscuro, sin harinas refinadas, endulzado con panela y nueces pecanas crocantes.', price: 6.0, k: 190, p: 6, c: 22, f: 3.5, tags: ['Sin harinas refinadas'] },
   { id: 'p3', line: 'postre', n: 'Cheesecake Saludable en Vaso de Maracuyá', d: 'Crema suave y sedosa de queso crema light con yogur griego sobre base horneada de avena, coronada con jalea natural de maracuyá.', price: 6.0, k: 210, p: 11, c: 24, f: 1.5, tags: ['Bajo en azúcar'] },
 ];
 const lineName = (l) => (LINES[l] ? LINES[l].name : { custom: 'Personalizado', snack: 'Snack saludable', postre: 'Postre saludable', bebida: 'Bebida del Día' }[l]);
 const ING = {
-  pollo: { id: 'pollo', n: 'Pechuga de pollo a la plancha', cat: 'prot', k: 165, p: 31, c: 0, g: 3.6, rate: 3.5 },
-  pescado: { id: 'pescado', n: 'Filete de pescado al vapor', cat: 'prot', k: 128, p: 26, c: 0, g: 2.7, rate: 4.0 },
-  res: { id: 'res', n: 'Carne de res magra saltada', cat: 'prot', k: 187, p: 27, c: 0, g: 8.5, rate: 4.2 },
-  tofu: { id: 'tofu', n: 'Tofu salteado', cat: 'prot', k: 144, p: 15, c: 3.5, g: 8, rate: 3.0 },
-  huevo: { id: 'huevo', n: 'Huevo entero cocido', cat: 'prot', k: 155, p: 12.6, c: 1.1, g: 10.6, rate: 2.5 },
-  quinua: { id: 'quinua', n: 'Quinua cocida', cat: 'carb', k: 120, p: 4.4, c: 21.3, g: 1.9, rate: 2.0 },
-  arroz: { id: 'arroz', n: 'Arroz integral cocido', cat: 'carb', k: 123, p: 2.7, c: 25.6, g: 1, rate: 1.0 },
-  camote: { id: 'camote', n: 'Camote al horno', cat: 'carb', k: 90, p: 2, c: 20.7, g: 0.1, rate: 0.8 },
-  papa: { id: 'papa', n: 'Papa sancochada', cat: 'carb', k: 87, p: 1.9, c: 20.1, g: 0.1, rate: 0.7 },
-  lentejas: { id: 'lentejas', n: 'Lentejas cocidas', cat: 'carb', k: 116, p: 9, c: 20.1, g: 0.4, rate: 1.2 },
-  frejoles: { id: 'frejoles', n: 'Frejoles', cat: 'carb', k: 135, p: 8.5, c: 24, g: 1.2, rate: 1.2 },
-  mix: { id: 'mix', n: 'Mix de ensalada y verduras al vapor', cat: 'veg', k: 35, p: 1.8, c: 7, g: 0.2, rate: 0.8 },
-  palta: { id: 'palta', n: 'Palta / Aguacate', cat: 'veg', k: 160, p: 2, c: 8.5, g: 14.7, rate: 3.0 },
-  aceite: { id: 'aceite', n: 'Aceite de oliva / aliño ligero', cat: 'veg', k: 884, p: 0, c: 0, g: 100, rate: 1.0 },
+  pollo: { id: 'pollo', n: 'Pechuga de pollo a la plancha', short: 'pollo', cat: 'prot', k: 165, p: 31, c: 0, g: 3.6, f: 0 },
+  pescado: { id: 'pescado', n: 'Filete de pescado al vapor', short: 'pescado', cat: 'prot', k: 128, p: 26, c: 0, g: 2.7, f: 0 },
+  res: { id: 'res', n: 'Carne de res magra saltada', short: 'carne de res', cat: 'prot', k: 187, p: 27, c: 0, g: 8.5, f: 0 },
+  tofu: { id: 'tofu', n: 'Tofu salteado', short: 'tofu', cat: 'prot', k: 144, p: 15, c: 3.5, g: 8, f: 0.3 },
+  huevo: { id: 'huevo', n: 'Huevo entero cocido', short: 'huevo', cat: 'prot', k: 155, p: 12.6, c: 1.1, g: 10.6, f: 0 },
+  quinua: { id: 'quinua', n: 'Quinua cocida', short: 'quinua', cat: 'carb', k: 120, p: 4.4, c: 21.3, g: 1.9, f: 2.8 },
+  arroz: { id: 'arroz', n: 'Arroz integral cocido', short: 'arroz integral', cat: 'carb', k: 123, p: 2.7, c: 25.6, g: 1, f: 1.8 },
+  camote: { id: 'camote', n: 'Camote al horno', short: 'camote', cat: 'carb', k: 90, p: 2, c: 20.7, g: 0.1, f: 3.3 },
+  papa: { id: 'papa', n: 'Papa sancochada', short: 'papa', cat: 'carb', k: 87, p: 1.9, c: 20.1, g: 0.1, f: 1.8 },
+  lentejas: { id: 'lentejas', n: 'Lentejas cocidas', short: 'lentejas', cat: 'carb', k: 116, p: 9, c: 20.1, g: 0.4, f: 7.9 },
+  frejoles: { id: 'frejoles', n: 'Frejoles', short: 'frejoles', cat: 'carb', k: 135, p: 8.5, c: 24, g: 1.2, f: 6.4 },
+  mix: { id: 'mix', n: 'Mix de ensalada y verduras al vapor', short: 'verduras', cat: 'veg', k: 35, p: 1.8, c: 7, g: 0.2, f: 2.6 },
+  palta: { id: 'palta', n: 'Palta / Aguacate', short: 'palta', cat: 'veg', k: 160, p: 2, c: 8.5, g: 14.7, f: 6.7 },
+  aceite: { id: 'aceite', n: 'Aceite de oliva / aliño ligero', short: 'aceite', cat: 'veg', k: 884, p: 0, c: 0, g: 100, f: 0 },
 };
-const CATS = { prot: { name: 'Proteínas', std: 120 }, carb: { name: 'Carbohidratos y menestras', std: 250 }, veg: { name: 'Verduras y grasas saludables', std: 200 } };
+const CATS = { prot: { name: 'Proteínas', std: 120 }, carb: { name: 'Carbohidratos y menestras', std: 150 }, veg: { name: 'Verduras y grasas saludables', std: 150 } };
+/* Menú personalizado: porciones incluidas en el precio base y máximo (estándar + 150 g) por grupo */
+const GROUP = { pollo: 'prot', pescado: 'prot', res: 'prot', tofu: 'prot', huevo: 'prot', quinua: 'carb', arroz: 'carb', camote: 'carb', papa: 'carb', lentejas: 'carb', frejoles: 'carb', mix: 'veg', palta: 'palta', aceite: 'aceite' };
+const GSTD = { prot: 120, carb: 150, veg: 150, palta: 0, aceite: 10 };
+const GMAX = { prot: 270, carb: 300, veg: 300, palta: 150, aceite: 10 };
+const GNAME = { prot: 'proteína', carb: 'carbohidratos', veg: 'verduras', palta: 'palta', aceite: 'aceite' };
+const blocks = (x) => (x > 0 ? Math.ceil(x / BLOCK_G - 1e-9) : 0);
+function customPrice(plate) {
+  const tot = { prot: 0, carb: 0, veg: 0, palta: 0, aceite: 0 };
+  plate.forEach((r) => { tot[GROUP[r.id]] += r.g; });
+  const prem = plate.some((r) => PREMIUM[r.id] && r.g > 0);
+  const bd = { prem: prem ? SUP.swap : 0, porc: 0, beb: 0 };
+  const lines = [];
+  const add = (label, b, rate) => { if (b > 0) { bd.porc += b * rate; lines.push([`+${b * BLOCK_G} g de ${label}`, b * rate]); } };
+  add('proteína', blocks(tot.prot - GSTD.prot), prem ? SUP.premium : SUP.pollo);
+  add('carbohidratos', blocks(tot.carb - GSTD.carb), SUP.quinua);
+  add('verduras', blocks(tot.veg - GSTD.veg), SUP.verduras);
+  add('palta', blocks(tot.palta), SUP.palta);
+  const missing = [tot.prot > 0 ? null : 'una proteína', tot.carb > 0 ? null : 'un carbohidrato', tot.veg > 0 ? null : 'verduras'].filter(Boolean);
+  return { tot, prem, bd, lines, extra: bd.prem + bd.porc, missing };
+}
 const ACTIVITY = [['Sedentario', 1.2, '1.20'], ['Ligeramente activo', 1.375, '1.375'], ['Moderadamente activo', 1.55, '1.55'], ['Muy activo', 1.725, '1.725'], ['Atleta / Extremo', 1.9, '1.90']];
 const MACROS = { eq: { name: 'Equilibrado', p: 25, c: 45, g: 30 }, hip: { name: 'Hipertrofia', p: 25, c: 50, g: 25 }, def: { name: 'Definición', p: 35, c: 35, g: 30 }, rend: { name: 'Rendimiento', p: 20, c: 55, g: 25 } };
 const MODES = {
   anticipado: { name: 'Pedido anticipado', price: 13.9, sub: 'Hasta las 9:00 p.m. del día anterior', unit: 'por plato', badge: 'Recomendado' },
-  plan: { name: 'Plan semanal', price: 13.0, sub: '5 almuerzos por S/ 65.00 en total', unit: 'por plato', badge: 'Ahorra S/ 4.50' },
   mismo: { name: 'Pedido del mismo día', price: 14.9, sub: 'Stock limitado en vivo', unit: 'por plato', badge: '' },
 };
 const hhmm = (mins) => { const h = Math.floor(mins / 60), mm = String(mins % 60).padStart(2, '0'); return `${h % 12 === 0 ? 12 : h % 12}:${mm} ${h < 12 ? 'a.m.' : 'p.m.'}`; };
 const SLOTS = Array.from({ length: 14 }, (_, i) => `${hhmm(660 + i * 30)} – ${hhmm(690 + i * 30)}`);
+/* Stock simulado del día: ingredientes en gramos (porciones extra, sustituciones y armador) y complementos en unidades */
+const INV0 = {
+  pollo: 6000, pescado: 4000, res: 0, tofu: 3000, huevo: 3000, quinua: 8000, arroz: 8000, camote: 3000, papa: 3000, lentejas: 3000, frejoles: 3000, mix: 8000, palta: 150, aceite: 1000,
+  s1: 8, s2: 6, s3: 5, p1: 12, p2: 0, p3: 4, beb0: 30, beb1: 30, beb2: 30, beb3: 30, beb4: 30,
+};
+/* Fechas de entrega: anticipado = próximo día elegido (cierra 9:00 p.m. del día anterior); mismo día = solo hoy */
+const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const DSH = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+const wdOf = (d) => (d.getDay() + 6) % 7;
+const CLOSE_H = 18, CUTOFF_H = 21;
+const mkDate = (dt, isToday) => ({ ok: true, key: `${dt.getFullYear()}-${dt.getMonth() + 1}-${dt.getDate()}`, label: `${DSH[wdOf(dt)]} ${dt.getDate()} ${MES[dt.getMonth()]}`, isToday });
+function lunchDate(dayIdx, mode, now = new Date()) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); const tw = wdOf(today);
+  if (mode === 'mismo') {
+    if (tw !== dayIdx) return { ok: false, why: tw > 4 ? 'El pedido del mismo día es de lunes a viernes. Usa el pedido anticipado.' : `El pedido del mismo día es solo para hoy (${DAYS[tw]}).` };
+    if (now.getHours() >= CLOSE_H) return { ok: false, why: 'La atención de hoy terminó a las 6:00 p.m. Usa el pedido anticipado.' };
+    return mkDate(today, true);
+  }
+  const diff = ((dayIdx - tw + 7) % 7) || 7; const dt = new Date(today); dt.setDate(today.getDate() + diff);
+  if (diff === 1 && now.getHours() >= CUTOFF_H) return { ok: false, why: 'El pedido anticipado para mañana cerró a las 9:00 p.m. Elige otro día.' };
+  return mkDate(dt, false);
+}
+function extraDate(dayIdx, now = new Date()) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (wdOf(today) === dayIdx && now.getHours() < CLOSE_H) return mkDate(today, true);
+  const r = lunchDate(dayIdx, 'anticipado', now); if (r.ok) return r;
+  const dt = new Date(today); dt.setDate(today.getDate() + 8); return mkDate(dt, false);
+}
 const zero = () => ({ k: 0, p: 0, c: 0, g: 0, f: 0 });
 const addN = (a, b, m = 1) => ({ k: a.k + b.k * m, p: a.p + b.p * m, c: a.c + b.c * m, g: a.g + b.g * m, f: a.f + b.f * m });
 
@@ -217,10 +269,17 @@ const addN = (a, b, m = 1) => ({ k: a.k + b.k * m, p: a.p + b.p * m, c: a.c + b.
 function configure(line, idx, cfg) {
   const d = MENU[line][idx];
   let n = { k: d.k, p: d.p, c: d.c, g: gOf(d), f: d.f };
-  const notes = []; let extraCost = 0;
+  const notes = []; const bd = { prem: 0, porc: 0, beb: 0 }; const use = {};
+  const prot = line === 'bowl' ? cfg.prot : d.prot;
   if (line === 'bowl') {
     n = addN(n, BASES[cfg.base], 1); n = addN(n, BASES[d.base], -1);
     if (cfg.base !== d.base) notes.push('Base: ' + BASES[cfg.base].n);
+    if (cfg.prot !== d.prot) {
+      n = addN(n, scaled(cfg.prot, STD_PROT_G), 1); n = addN(n, scaled(d.prot, STD_PROT_G), -1);
+      use[cfg.prot] = STD_PROT_G;
+      if (PREMIUM[cfg.prot] && !PREMIUM[d.prot]) { bd.prem = SUP.swap; notes.push(`Cambio a ${ING[cfg.prot].short} (proteína premium) +${S(SUP.swap)}`); }
+      else notes.push(`Cambio a ${ING[cfg.prot].short} (sin costo)`);
+    }
   }
   if (line !== 'criollo') {
     n = addN(n, CREAMS[cfg.cream], 1); n = addN(n, CREAMS[0], -1);
@@ -229,12 +288,14 @@ function configure(line, idx, cfg) {
   }
   EXTRAS_BY_LINE[line].forEach((id) => {
     const q = cfg.extras[id] || 0; if (!q) return;
-    const e = exOf(id, idx);
-    n = addN(n, e, q); extraCost += e.price * q;
-    notes.push(`+ ${e.n}${q > 1 ? ' ×' + q : ''} (${S(e.price * q)})`);
+    const e = extraInfo(id, idx, prot); const cost = e.price * q;
+    n = addN(n, e.nut, q);
+    if (e.kind === 'beb') bd.beb += cost; else bd.porc += cost;
+    use[e.inv] = (use[e.inv] || 0) + e.unit * q;
+    notes.push(`${e.kind === 'beb' ? '+ ' + e.n : e.n.replace('+50 g', `+${BLOCK_G * q} g`)} (${S(cost)})`);
   });
   Object.keys(n).forEach((k) => { n[k] = Math.max(0, n[k]); });
-  return { n, notes, extraCost };
+  return { n, notes, bd, use, prot, extraCost: bd.prem + bd.porc + bd.beb };
 }
 
 /* ---------- Componentes auxiliares ---------- */
@@ -435,11 +496,12 @@ function App() {
   const [pay, setPay] = useState('yape');
   const [touched, setTouched] = useState(false);
   const [ticket, setTicket] = useState(null);
+  const [inv, setInv] = useState(INV0);
 
   /* calculadora */
   const [sex, setSex] = useState('H'); const [age, setAge] = useState(23); const [weight, setWeight] = useState(70); const [height, setHeight] = useState(172);
   const [act, setAct] = useState(1.375); const [adj, setAdj] = useState(0); const [macro, setMacro] = useState('eq');
-  const [plate, setPlate] = useState([{ id: 'pollo', g: 120 }, { id: 'quinua', g: 200 }, { id: 'lentejas', g: 100 }, { id: 'mix', g: 200 }, { id: 'palta', g: 50 }]);
+  const [plate, setPlate] = useState([{ id: 'pollo', g: 120 }, { id: 'quinua', g: 150 }, { id: 'mix', g: 150 }, { id: 'palta', g: 50 }]);
   const [example, setExample] = useState(true);
   const [pickCat, setPickCat] = useState('prot'); const [pickId, setPickId] = useState('pollo'); const [pickG, setPickG] = useState(100);
 
@@ -450,56 +512,94 @@ function App() {
   }, []);
   useEffect(() => { window.scrollTo({ top: 0 }); }, [view]);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 2200); return () => clearTimeout(t); }, [toast]);
-  useEffect(() => { if (mode !== 'mismo' && pay === 'efectivo') setPay('yape'); }, [mode]);
+  const efectivoOk = cart.length > 0 && cart.every((i) => i.isToday);
+  useEffect(() => { if (!efectivoOk && pay === 'efectivo') setPay('yape'); }, [efectivoOk]);
 
   const base = MODES[mode].price;
-  const unitPrice = (it) => (it.fixed != null ? it.fixed : base + it.extraCost + (it.adj || 0));
+  /* Precio final = precio base + suplemento premium + porciones adicionales (+ bebida). Cada ítem guarda la modalidad con la que se agregó. */
+  const unitPrice = (it) => (it.fixed != null ? it.fixed : it.base + it.extraCost);
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
   const mainCount = cart.filter((i) => i.fixed == null).reduce((s, i) => s + i.qty, 0);
-  const addFixed = (key, line, name, price, n) => {
-    setCart((c) => (c.some((i) => i.key === key) ? c.map((i) => (i.key === key ? { ...i, qty: Math.min(9, i.qty + 1) } : i)) : [...c, { uid: Math.random().toString(36).slice(2), key, line, name, day: line === 'bebida' ? DAYS[day] : 'Snack / postre', qty: 1, n, notes: [], extraCost: 0, adj: 0, fixed: price }]));
+  const mismoInCart = cart.filter((i) => i.fixed == null && i.mode === 'mismo').reduce((s, i) => s + i.qty, 0);
+  const usedInCart = (k, items = cart) => items.reduce((s, i) => s + ((i.use && i.use[k]) || 0) * i.qty, 0);
+  const avail = (k) => (inv[k] == null ? Infinity : inv[k] - usedInCart(k));
+  const lunchFor = (key) => cart.some((i) => i.fixed == null && i.date === key);
+  const newId = () => Math.random().toString(36).slice(2);
+  const addFixed = (key, line, name, price, n, dt) => {
+    if (avail(key) < 1) { setToast(inv[key] > 0 ? 'No quedan más unidades disponibles' : 'Producto agotado'); return; }
+    setCart((c) => (c.some((i) => i.key === key && i.date === dt.key) ? c.map((i) => (i.key === key && i.date === dt.key ? { ...i, qty: i.qty + 1 } : i)) : [...c, { uid: newId(), key, line, name, date: dt.key, dateLabel: dt.label, isToday: dt.isToday, qty: 1, n, notes: [], use: { [key]: 1 }, fixed: price }]));
     setToast('Agregado al carrito');
   };
   const cartTotal = cart.reduce((s, i) => s + unitPrice(i) * i.qty, 0);
   const cartNut = cart.reduce((a, i) => addN(a, i.n, i.qty), zero());
 
   /* ---- personalizador ---- */
-  const openDish = (line, idx) => setDish({ line, idx, qty: 1, cfg: { base: MENU[line][idx].base || 'quinua', cream: 0, removed: {}, extras: {} } });
+  const openDish = (line, idx) => setDish({ line, idx, qty: 1, cfg: { base: MENU[line][idx].base || 'quinua', prot: MENU[line][idx].prot || null, cream: 0, removed: {}, extras: {} } });
   const dc = dish ? configure(dish.line, dish.idx, dish.cfg) : null;
   const setCfg = (patch) => setDish((d) => ({ ...d, cfg: { ...d.cfg, ...patch } }));
+  /* Valida fecha, stock de platos del mismo día y stock de ingredientes para `qty` unidades de un plato que consume `use` */
+  const checkLunch = (dt, md, use, qty, items = cart) => {
+    if (!dt.ok) return dt.why;
+    if (md === 'mismo' && items.filter((i) => i.fixed == null && i.mode === 'mismo').reduce((s, i) => s + i.qty, 0) + qty > stock) return stock > 0 ? `Solo quedan ${stock} platos para hoy.` : 'Se agotaron los platos de hoy.';
+    for (const k of Object.keys(use)) {
+      const left = (inv[k] ?? Infinity) - usedInCart(k, items);
+      if (use[k] * qty > left) { const name = k.startsWith('beb') ? 'bebida del día' : ING[k].short; return left > 0 ? `No hay suficiente ${name} para esa cantidad.` : `Agotado hoy: ${name}.`; }
+    }
+    return '';
+  };
   const addToCart = () => {
-    const d = MENU[dish.line][dish.idx];
-    setCart((c) => [...c, { uid: Math.random().toString(36).slice(2), line: dish.line, name: d.n, day: DAYS[day], qty: dish.qty, n: dc.n, notes: dc.notes, extraCost: dc.extraCost, adj: 0 }]);
+    const d = MENU[dish.line][dish.idx]; const dt = lunchDate(dish.idx, mode);
+    const err = checkLunch(dt, mode, dc.use, dish.qty); if (err) { setToast(err); return; }
+    setCart((c) => [...c, { uid: newId(), line: dish.line, name: d.n, dayIdx: dish.idx, date: dt.key, dateLabel: dt.label, isToday: dt.isToday, mode, base, qty: dish.qty, n: dc.n, notes: dc.notes, extraCost: dc.extraCost, bd: dc.bd, use: dc.use }]);
     setDish(null); setToast('Agregado al carrito');
   };
   const addCustom = () => {
-    const t = plate.reduce((a, r) => addN(a, { k: ING[r.id].k, p: ING[r.id].p, c: ING[r.id].c, g: ING[r.id].g, f: 0 }, r.g / 100), zero());
-    setCart((c) => [...c, { uid: Math.random().toString(36).slice(2), line: 'custom', name: 'Plato personalizado', day: 'Hoy', qty: 1, n: t, notes: plate.map((r) => `${ING[r.id].n}: ${r.g} g`), extraCost: 0, adj: plateAdj }]);
+    const dt = lunchDate(day, mode); const use = {}; plate.forEach((r) => { use[r.id] = (use[r.id] || 0) + r.g; });
+    if (cp.missing.length) { setToast(`Elige ${cp.missing.join(', ')}.`); return; }
+    const err = checkLunch(dt, mode, use, 1); if (err) { setToast(err); return; }
+    const t = plate.reduce((a, r) => addN(a, scaled(r.id, r.g), 1), zero());
+    setCart((c) => [...c, { uid: newId(), line: 'custom', name: 'Plato personalizado', dayIdx: day, date: dt.key, dateLabel: dt.label, isToday: dt.isToday, mode, base, qty: 1, n: t, notes: plate.map((r) => `${ING[r.id].n}: ${r.g} g`), extraCost: cp.extra, bd: cp.bd, use }]);
     setToast('Plato personalizado agregado'); setDrawer(true);
   };
-  const setQty = (uid, q) => setCart((c) => (q <= 0 ? c.filter((i) => i.uid !== uid) : c.map((i) => (i.uid === uid ? { ...i, qty: Math.min(9, q) } : i))));
+  const setQty = (uid, q) => {
+    const it = cart.find((i) => i.uid === uid); if (!it) return;
+    if (q <= 0) { setCart((c) => c.filter((i) => i.uid !== uid)); return; }
+    if (q > it.qty) {
+      const others = cart.filter((i) => i.uid !== uid);
+      const err = it.fixed != null ? (avail(it.key) < q - it.qty ? 'No quedan más unidades disponibles' : '') : checkLunch({ ok: true }, it.mode, it.use || {}, q, others);
+      if (err) { setToast(err); return; }
+    }
+    setCart((c) => c.map((i) => (i.uid === uid ? { ...i, qty: q } : i)));
+  };
 
   /* ---- calculadora ---- */
   const tmb = sex === 'H' ? 10 * weight + 6.25 * height - 5 * age + 5 : 10 * weight + 6.25 * height - 5 * age - 161;
   const tdee = tmb * act; const meta = tdee * (1 + adj / 100); const lunchK = meta * 0.35; const dist = MACROS[macro];
   const tgt = { p: (lunchK * dist.p) / 400, c: (lunchK * dist.c) / 400, g: (lunchK * dist.g) / 900 };
   const pt = useMemo(() => plate.reduce((a, r) => { const i = ING[r.id], f = r.g / 100; a.k += i.k * f; a.p += i.p * f; a.c += i.c * f; a.g += i.g * f; a.grams += r.g; return a; }, { k: 0, p: 0, c: 0, g: 0, grams: 0 }), [plate]);
-  const plateAdj = useMemo(() => {
-    let tot = 0;
-    Object.keys(CATS).forEach((cc) => {
-      const rows = plate.filter((r) => ING[r.id].cat === cc); const grams = rows.reduce((s, r) => s + r.g, 0);
-      if (grams > CATS[cc].std) { const frac = (grams - CATS[cc].std) / grams; tot += rows.reduce((s, r) => s + ((r.g * ING[r.id].rate) / 100) * frac, 0); }
-    });
-    return Math.round(tot * 100) / 100;
-  }, [plate]);
+  const cp = useMemo(() => customPrice(plate), [plate]);
+  /* Máximo de gramos que puede tener un ingrediente: tope del grupo (estándar + 150 g) y stock disponible */
+  const maxFor = (id, pl) => {
+    const grp = GROUP[id]; const others = pl.filter((r) => r.id !== id && GROUP[r.id] === grp).reduce((s, r) => s + r.g, 0);
+    return Math.max(0, Math.min(GMAX[grp] - others, avail(id)));
+  };
+  const limitMsg = (id, m) => (avail(id) <= 0 ? `Agotado hoy: ${ING[id].short}.` : m >= avail(id) ? `Solo quedan ${avail(id)} g de ${ING[id].short}.` : GROUP[id] === 'aceite' ? 'El aliño se limita a 10 g.' : `Máximo ${GMAX[GROUP[id]]} g de ${GNAME[GROUP[id]]} (150 g adicionales).`);
   const kM = pt.p * 4 + pt.c * 4 + pt.g * 9;
   const shares = kM > 0 ? { p: (pt.p * 4 / kM) * 100, c: (pt.c * 4 / kM) * 100, g: (pt.g * 9 / kM) * 100 } : { p: dist.p, c: dist.c, g: dist.g };
   const addIng = () => {
     const g = clamp(Number(pickG) || 0, 1, 1000);
-    const wasEx = example; if (example) setExample(false);
-    setPlate((pl) => { const b = wasEx ? [] : pl; const ex = b.find((r) => r.id === pickId); return ex ? b.map((r) => (r.id === pickId ? { ...r, g: clamp(r.g + g, 0, 1000) } : r)) : [...b, { id: pickId, g }]; });
+    const b = example ? [] : plate; const cur = (b.find((r) => r.id === pickId) || { g: 0 }).g;
+    const m = maxFor(pickId, b); const addable = m - cur;
+    if (addable <= 0) { setToast(limitMsg(pickId, m)); return; }
+    const add = Math.min(g, addable); if (add < g) setToast(limitMsg(pickId, m));
+    if (example) setExample(false);
+    setPlate(cur ? b.map((r) => (r.id === pickId ? { ...r, g: r.g + add } : r)) : [...b, { id: pickId, g: add }]);
   };
-  const setGrams = (id, v) => setPlate((pl) => pl.map((r) => (r.id === id ? { ...r, g: clamp(Number(v) || 0, 0, 1000) } : r)));
+  const setGrams = (id, v) => {
+    const want = clamp(Number(v) || 0, 0, 1000); const m = maxFor(id, plate);
+    if (want > m) setToast(limitMsg(id, m));
+    setPlate((pl) => pl.map((r) => (r.id === id ? { ...r, g: Math.min(want, m) } : r)));
+  };
 
   /* ---- checkout ---- */
   const errs = {
@@ -508,11 +608,28 @@ function App() {
     phone: !/^9\d{8}$/.test(form.phone) ? 'Ingresa un WhatsApp de 9 dígitos que empiece con 9.' : '',
     slot: slot === null ? 'Elige una franja de recojo.' : '',
   };
-  const formOk = !errs.name && !errs.ucode && !errs.phone && !errs.slot;
+  /* Franjas: si algo se recoge hoy, no se pueden elegir franjas que ya terminaron */
+  const nowMin = (() => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); })();
+  const slotPast = (i) => cart.some((it) => it.isToday) && 690 + i * 30 <= nowMin;
+  /* Verificación de disponibilidad antes de confirmar: fechas, platos del día, ingredientes, complementos y bebidas con almuerzo */
+  const stockErrs = (() => {
+    const out = [];
+    cart.forEach((i) => {
+      if (i.fixed != null) { if (i.line === 'bebida' && !lunchFor(i.date)) out.push(`La bebida del ${i.dateLabel} se vende junto con un almuerzo de ese día.`); return; }
+      const r = lunchDate(i.dayIdx, i.mode); if (!r.ok || r.key !== i.date) out.push(`${i.name} (${i.dateLabel}) ya no está disponible para esa fecha.`);
+    });
+    if (mismoInCart > stock) out.push(`Solo quedan ${stock} platos para hoy.`);
+    Object.keys(inv).forEach((k) => { if (usedInCart(k) > inv[k]) out.push(k in ING ? `No hay suficiente ${ING[k].short} para tu pedido.` : 'Un complemento de tu pedido ya no tiene stock suficiente.'); });
+    if (slot !== null && slotPast(slot)) out.push('La franja elegida ya pasó. Elige otra.');
+    return out;
+  })();
+  const formOk = !errs.name && !errs.ucode && !errs.phone && !errs.slot && !stockErrs.length;
   const confirmOrder = () => {
     setTouched(true); if (!formOk || !cart.length) return;
-    setTicket({ code: 'BS-' + Math.random().toString(36).slice(2, 8).toUpperCase(), items: cart.map((i) => ({ ...i, unit: unitPrice(i) })), nut: cartNut, total: cartTotal, slot, pay, mode, name: form.name.trim(), ucode: form.ucode });
-    if (mode === 'mismo') setStock((s) => Math.max(0, s - cartCount));
+    const modes = [...new Set(cart.filter((i) => i.mode).map((i) => MODES[i.mode].name))];
+    setTicket({ code: 'BS-' + Math.random().toString(36).slice(2, 8).toUpperCase(), pin: String(Math.floor(1000 + Math.random() * 9000)), items: cart.map((i) => ({ ...i, unit: unitPrice(i) })), nut: cartNut, total: cartTotal, slot, pay, modes, name: form.name.trim(), ucode: form.ucode });
+    setStock((s) => Math.max(0, s - mismoInCart));
+    setInv((v) => { const nv = { ...v }; Object.keys(nv).forEach((k) => { nv[k] = Math.max(0, nv[k] - usedInCart(k)); }); return nv; });
     setCart([]);
   };
 
@@ -537,11 +654,11 @@ function App() {
   );
 
   const modeBar = (
-    <div className="grid md:grid-cols-3 gap-3" role="radiogroup" aria-label="Modalidad de pedido">
+    <div className="grid md:grid-cols-2 gap-3" role="radiogroup" aria-label="Modalidad de pedido">
       {Object.entries(MODES).map(([k, v]) => (
         <button key={k} role="radio" aria-checked={mode === k} onClick={() => setMode(k)} className={'card p-4 text-left ' + (mode === k ? 'sel' : '')}>
           <div className="flex justify-between items-start gap-2"><span className="font-bold">{v.name}</span>{v.badge && <span className="chip chip-m">{v.badge}</span>}{k === 'mismo' && <span className="chip chip-p num">Quedan {stock} platos hoy</span>}</div>
-          <div className="flex items-baseline gap-2 mt-1"><span className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>{S(k === 'plan' ? 13 : v.price)}</span><span className="text-xs muted">{v.unit}</span></div>
+          <div className="flex items-baseline gap-2 mt-1"><span className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>{S(v.price)}</span><span className="text-xs muted">{v.unit}</span></div>
           <div className="text-xs muted mt-0.5">{v.sub}</div>
         </button>
       ))}
@@ -550,6 +667,9 @@ function App() {
 
   const bebidaCard = (() => {
     const b = BEB[day];
+    const lunch = cart.find((i) => i.fixed == null && i.dayIdx === day);
+    const left = avail('beb' + day);
+    const why = left < 1 ? 'Agotada por hoy.' : !lunch ? `Se agrega junto con un almuerzo del ${DAYS[day].toLowerCase()}. Agrega primero tu almuerzo.` : '';
     return (
       <section className="rounded-3xl overflow-hidden grid sm:grid-cols-[200px_1fr] items-stretch" style={{ background: 'var(--mos-soft)', border: '1px solid var(--mos)' }} aria-label="Bebida natural del día">
         <DishPhoto line="bebida" idx={day} name={b.n} style={{ minHeight: 170, height: '100%' }} />
@@ -558,7 +678,8 @@ function App() {
           <h3 className="display text-xl font-bold leading-tight">{b.n}</h3>
           <p className="text-sm muted">{b.d}</p>
           <div className="mt-auto flex items-center justify-between gap-3 flex-wrap"><div className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>+ {S(BEB_PRICE)}</div>
-            <button className="btn btn-p" onClick={() => addFixed('beb' + day, 'bebida', 'Bebida del Día: ' + b.n, BEB_PRICE, { k: b.k, p: 0, c: b.c, g: 0, f: 0 })}><Icon n="plus" size={16} />Agregar por {S(BEB_PRICE)}</button></div>
+            <button className="btn btn-p" disabled={!!why} onClick={() => addFixed('beb' + day, 'bebida', 'Bebida del Día: ' + b.n, BEB_PRICE, { k: b.k, p: 0, c: b.c, g: 0, f: 0 }, { ok: true, key: lunch.date, label: lunch.dateLabel, isToday: lunch.isToday })}><Icon n="plus" size={16} />Agregar por {S(BEB_PRICE)}</button></div>
+          {why && <p className="text-xs muted">{why}</p>}
         </div>
       </section>
     );
@@ -566,6 +687,7 @@ function App() {
 
   const menuItem = (it) => {
     const n = { k: it.k, p: it.p, c: it.c, g: gOf(it), f: it.f };
+    const left = avail(it.id);
     return (
       <article key={it.id} className="card dish overflow-hidden flex flex-col">
         <div className="relative"><DishPhoto line={it.line} idx={Number(it.id.slice(1)) - 1} name={it.n} style={{ aspectRatio: '4 / 3' }} />
@@ -575,7 +697,8 @@ function App() {
           <div><h3 className="display text-lg font-bold leading-tight">{it.n}</h3><p className="text-sm muted mt-1">{it.d}</p></div>
           <div className="flex flex-wrap gap-1.5 num"><span className="chip chip-g">{it.k} kcal</span><span className="chip chip-g">{it.p} g proteína</span><span className="chip">{it.c} g carb</span><span className="chip">{it.f} g fibra</span></div>
           <div className="mt-auto flex items-center justify-between gap-3"><div className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>{S(it.price)}</div>
-            <button className="btn btn-p" onClick={() => addFixed(it.id, it.line, it.n, it.price, n)}><Icon n="plus" size={16} />Agregar</button></div>
+            <button className="btn btn-p" disabled={left < 1} onClick={() => addFixed(it.id, it.line, it.n, it.price, n, extraDate(day))}><Icon n="plus" size={16} />{left < 1 ? 'Agotado' : 'Agregar'}</button></div>
+          {left >= 1 && left <= 5 && <p className="text-xs muted -mt-1">Quedan {left}</p>}
         </div>
       </article>
     );
@@ -583,8 +706,9 @@ function App() {
 
   const extrasView = (
     <div className="pop py-8 pb-10 flex flex-col gap-8">
-      <div><h1 className="display text-4xl font-extrabold leading-tight">Snacks &amp; postres saludables</h1><p className="muted mt-2 max-w-2xl">Para media mañana, pre-entreno o cuando aprieta el hambre entre clases. Se pide junto con tu almuerzo y se recoge en el mismo pase.</p></div>
-      <div className="flex gap-2 overflow-x-auto" role="tablist" aria-label="Día de la bebida">{DAYS.map((d, i) => <button key={d} role="tab" className="tab" aria-selected={day === i} onClick={() => setDay(i)}>{d}{i === todayIdx ? ' · hoy' : ''}</button>)}</div>
+      <div><h1 className="display text-4xl font-extrabold leading-tight">Snacks &amp; postres saludables</h1><p className="muted mt-2 max-w-2xl">Para media mañana, pre-entreno o cuando aprieta el hambre entre clases. Se recogen con el mismo pase QR de tu pedido.</p></div>
+      <div className="flex gap-2 overflow-x-auto" role="tablist" aria-label="Día de recojo">{DAYS.map((d, i) => <button key={d} role="tab" className="tab" aria-selected={day === i} onClick={() => setDay(i)}>{extraDate(i).label}{extraDate(i).isToday ? ' · hoy' : ''}</button>)}</div>
+      <p className="text-sm muted -mt-5">Snacks y postres se pueden pedir solos o con tu almuerzo. Recojo: <b style={{ color: 'var(--fg)' }}>{extraDate(day).label}</b>, Módulo Piso 1 UTEC.</p>
       {bebidaCard}
       <section><div className="flex items-baseline justify-between gap-3 flex-wrap"><h2 className="display text-2xl font-bold">Snacks saludables</h2><span className="text-sm muted">Wrap, tostón y parfait</span></div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-4">{SNACKS.map(menuItem)}</div></section>
@@ -601,8 +725,11 @@ function App() {
         <div className="mt-6">{modeBar}</div>
       </section>
       <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Día">
-        {DAYS.map((d, i) => <button key={d} role="tab" className="tab" aria-selected={day === i} onClick={() => setDay(i)}>{d}{i === todayIdx ? ' · hoy' : ''}</button>)}
+        {DAYS.map((d, i) => { const r = lunchDate(i, mode); return <button key={d} role="tab" className="tab" aria-selected={day === i} onClick={() => setDay(i)} style={r.ok ? null : { opacity: 0.55 }}>{r.ok ? r.label : d}{r.ok && r.isToday ? ' · hoy' : ''}</button>; })}
       </div>
+      {(() => { const r = lunchDate(day, mode); return r.ok
+        ? <p className="text-sm muted mt-2">Entrega: <b style={{ color: 'var(--fg)' }}>{r.label}</b> · {MODES[mode].name}{mode === 'mismo' ? ` · quedan ${stock - mismoInCart} platos` : ''}</p>
+        : <p className="chip chip-m mt-2">{r.why}</p>; })()}
       <div className="flex gap-2 overflow-x-auto mt-3 pb-1" role="tablist" aria-label="Categoría">
         {[['all', 'Todos'], ...Object.entries(LINES).map(([k, v]) => [k, v.name])].map(([k, n]) => <button key={k} role="tab" className="tab" aria-selected={cat === k} onClick={() => setCat(k)}>{n}</button>)}
       </div>
@@ -624,7 +751,7 @@ function App() {
                 </div>
                 <div className="mt-auto flex items-center justify-between gap-3">
                   <div className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>{S(base)}</div>
-                  <button className="btn btn-p" onClick={() => openDish(k, day)}>Personalizar y Agregar</button>
+                  <button className="btn btn-p" disabled={!lunchDate(day, mode).ok} onClick={() => openDish(k, day)}>Personalizar y Agregar</button>
                 </div>
               </div>
             </article>
@@ -633,7 +760,7 @@ function App() {
         <article className="card dish p-5 flex flex-col gap-3" style={{ background: 'var(--mos-soft)', borderColor: 'var(--mos)' }}>
           <span className="chip chip-m self-start"><Icon n="calc" size={13} />Para quienes entrenan</span>
           <h3 className="display text-xl font-bold">Arma tu plato por gramos</h3>
-          <p className="text-sm">Calcula tu TDEE, mira cuántos macros necesitas en el almuerzo y pesa cada ingrediente. El precio parte desde {S(base)} según el gramaje.</p>
+          <p className="text-sm">Calcula tu TDEE, mira cuántos macros necesitas en el almuerzo y pesa cada ingrediente. El precio parte desde {S(base)} y suma los suplementos según el gramaje.</p>
           <button className="btn btn-p mt-auto" onClick={() => setView('calc')}>Abrir la calculadora <Icon n="arrow" size={16} /></button>
         </article>
       </div>
@@ -643,6 +770,7 @@ function App() {
   /* ---- modal personalizador ---- */
   const dishModal = dish && (() => {
     const d = MENU[dish.line][dish.idx]; const line = dish.line; const unit = base + dc.extraCost;
+    const dt = lunchDate(dish.idx, mode); const modalErr = checkLunch(dt, mode, dc.use, dish.qty);
     return (
       <div className="overlay overflow-y-auto" onClick={() => setDish(null)} style={{ padding: 'max(12px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))' }}>
         <div role="dialog" aria-modal="true" aria-label={d.n} className="card wrap my-2 p-4 md:p-6 pop" style={{ maxWidth: 1100 }} onClick={(e) => e.stopPropagation()}>
@@ -653,7 +781,7 @@ function App() {
           <div className="grid lg:grid-cols-[1fr_1fr] gap-6 mt-4 items-start">
             <div className="flex flex-col gap-4 min-w-0">
               <DishPhoto line={line} idx={dish.idx} name={d.n} className="rounded-2xl" style={{ aspectRatio: '4 / 3' }} />
-              <div><span className="chip chip-m">{DAYS[day]} · {LINES[line].name}</span>
+              <div><span className="chip chip-m">{dt.ok ? dt.label : DAYS[dish.idx]} · {LINES[line].name}</span>
                 <h2 className="display text-3xl font-extrabold mt-2 leading-tight">{d.n}</h2><p className="muted mt-1">{d.d}</p>
                 <div className="display text-3xl font-extrabold num mt-2" style={{ color: 'var(--pri)' }}>{S(base)}<span className="text-sm muted font-normal"> {MODES[mode].name.toLowerCase()}</span></div></div>
               <div><div className="lbl mb-2">Tu plato en vivo</div><NutRow n={dc.n} big /><div className="text-xs muted mt-1 num">Grasas: {r1(dc.n.g)} g · Lo que cambies se recalcula al instante.</div></div>
@@ -673,6 +801,20 @@ function App() {
                       <button key={k} role="radio" aria-checked={dish.cfg.base === k} onClick={() => setCfg({ base: k })} className={'soft p-2.5 text-left text-sm font-semibold flex items-center gap-3 ' + (dish.cfg.base === k ? 'sel' : '')}><IngIcon k={k === 'mix' ? 'mixbase' : k} />{b.n}</button>
                     ))}</div></div>
                 )}
+                {line === 'bowl' && (
+                  <div className="card p-4"><div className="flex justify-between gap-2"><h3 className="font-bold">Elige tu proteína</h3><span className="chip chip-g">Premium +{S(SUP.swap)}</span></div>
+                    <div className="grid gap-2 mt-3" role="radiogroup">{['pollo', 'pescado', 'res'].map((k) => {
+                      const extra = PREMIUM[k] && !PREMIUM[d.prot] ? SUP.swap : 0;
+                      const off = k !== d.prot && avail(k) < STD_PROT_G * dish.qty;
+                      return (
+                        <button key={k} role="radio" aria-checked={dish.cfg.prot === k} disabled={off} onClick={() => setCfg({ prot: k })} className={'soft p-2.5 text-left text-sm font-semibold flex items-center gap-3 ' + (dish.cfg.prot === k ? 'sel' : '')} style={off ? { opacity: 0.5, cursor: 'not-allowed' } : null}>
+                          <IngIcon k={k} /><span className="flex-1">{ING[k].n}{k === d.prot && <span className="muted font-normal"> · de la receta</span>}</span>
+                          <span className="text-xs num" style={{ color: off ? 'var(--danger)' : extra ? 'var(--pri)' : 'var(--grn)' }}>{off ? 'Agotado' : extra ? '+' + S(extra) : 'Gratis'}</span>
+                        </button>
+                      );
+                    })}</div>
+                    <p className="text-xs muted mt-2">Cambiar entre proteínas equivalentes no tiene costo. Pescado y res son premium.</p></div>
+                )}
                 <div className="card p-4"><div className="flex justify-between"><h3 className="font-bold">Quita lo que no quieras</h3><span className="chip chip-g">S/ 0.00</span></div>
                   <div className="grid sm:grid-cols-2 gap-2 mt-3">{d.rm.map((id) => (
                     <label key={id} className="soft p-2.5 flex items-center gap-3 text-sm font-semibold cursor-pointer">
@@ -681,7 +823,7 @@ function App() {
                       <span className="capitalize" style={dish.cfg.removed[id] ? { textDecoration: 'line-through', color: 'var(--muted)' } : null}>{RM[id].n}</span><span className="ml-auto text-xs muted num">{r0(RM[id].k)} kcal</span>
                     </label>
                   ))}</div>
-                  <p className="text-xs muted mt-2">Desmarca un ingrediente para quitarlo. Verás las calorías y macros actualizadas.</p></div>
+                  <p className="text-xs muted mt-2">Desmarca un ingrediente para quitarlo. Verás las calorías y macros actualizadas. Retirar ingredientes no genera descuento.</p></div>
                 <div className="card p-4"><div className="flex justify-between"><h3 className="font-bold">Crema incluida</h3><span className="chip chip-g">S/ 0.00</span></div>
                   <div className="grid sm:grid-cols-2 gap-2 mt-3" role="radiogroup">{CREAMS.map((cr, i) => (
                     <button key={cr.n} role="radio" aria-checked={dish.cfg.cream === i} onClick={() => setCfg({ cream: i })} className={'soft p-2.5 text-left text-sm font-semibold flex items-center gap-3 ' + (dish.cfg.cream === i ? 'sel' : '')}><IngIcon k={'crema' + i} />{cr.n}</button>
@@ -691,15 +833,17 @@ function App() {
               <div className="card p-4">
                 <div className="flex justify-between items-baseline"><h3 className="font-bold">Desea agregar extras</h3><span className="text-sm font-semibold" style={{ color: 'var(--danger)' }}>(Opcional)</span></div>
                 <div className="grid gap-2 mt-3">{EXTRAS_BY_LINE[line].map((id) => {
-                  const e = exOf(id, dish.idx); const q = dish.cfg.extras[id] || 0; const mx = id === 'bebida' ? 1 : 3; const set = (v) => setCfg({ extras: { ...dish.cfg.extras, [id]: clamp(v, 0, mx) } });
+                  const e = extraInfo(id, dish.idx, dc.prot); const q = dish.cfg.extras[id] || 0; const mx = e.max; const set = (v) => setCfg({ extras: { ...dish.cfg.extras, [id]: clamp(v, 0, mx) } });
+                  const left = avail(e.inv) - ((dc.use[e.inv] || 0) - e.unit * q) * dish.qty; const canMore = q < mx && left >= e.unit * (q + 1) * dish.qty;
+                  const msg = left < e.unit * dish.qty && !q ? 'Agotado hoy' : q >= mx && e.kind === 'porc' ? 'Máximo 150 g adicionales' : !canMore && q < mx ? 'No hay más stock disponible' : '';
                   return (
                     <div key={id} className={'soft p-3 flex items-center justify-between gap-3 ' + (q ? 'sel' : '')} style={id === 'bebida' && !q ? { background: 'var(--mos-soft)' } : null}>
-                      <IngIcon k={id === 'quinua' ? 'mixbase' : id} src={id === 'bebida' ? `img/bebida-${dish.idx + 1}.jpg` : null} size={44} />
-                      <div className="min-w-0 flex-1"><div className="font-semibold text-sm">{e.n}</div><div className="text-xs muted num">+{e.k} kcal{e.p ? ` · +${e.p} g proteína` : ''}</div><div className="text-sm font-bold num" style={{ color: 'var(--pri)' }}>+{S(e.price)}</div></div>
+                      <IngIcon k={e.icon} src={id === 'bebida' ? `img/bebida-${dish.idx + 1}.jpg` : null} size={44} />
+                      <div className="min-w-0 flex-1"><div className="font-semibold text-sm">{e.n}</div><div className="text-xs muted num">+{r0(e.nut.k)} kcal{e.nut.p >= 1 ? ` · +${r1(e.nut.p)} g proteína` : ''}</div><div className="text-sm font-bold num" style={{ color: 'var(--pri)' }}>+{S(e.price)}{e.kind === 'porc' ? ' c/u' : ''}</div>{msg && <div className="text-[11px] font-semibold" style={{ color: 'var(--danger)' }}>{msg}</div>}</div>
                       <div className="flex items-center gap-1.5">
                         <button className="btn !p-1.5 !rounded-full" aria-label={`Quitar ${e.n}`} disabled={!q} onClick={() => set(q - 1)}><Icon n="minus" size={14} /></button>
                         <span className="w-5 text-center font-bold num" aria-live="polite">{q}</span>
-                        <button className="btn !p-1.5 !rounded-full" aria-label={`Agregar ${e.n}`} disabled={q >= mx} onClick={() => set(q + 1)}><Icon n="plus" size={14} /></button>
+                        <button className="btn !p-1.5 !rounded-full" aria-label={`Agregar ${e.n}`} disabled={!canMore} onClick={() => set(q + 1)}><Icon n="plus" size={14} /></button>
                       </div>
                     </div>
                   );
@@ -707,8 +851,16 @@ function App() {
               </div>
 
               <div className="card p-4 flex flex-wrap items-center gap-3 justify-between" style={{ position: 'sticky', bottom: 8 }}>
+                <div className="w-full text-sm num flex flex-col gap-0.5">
+                  <div className="flex justify-between"><span className="muted">Precio base ({MODES[mode].name.toLowerCase()})</span><span>{S(base)}</span></div>
+                  {dc.bd.prem > 0 && <div className="flex justify-between"><span className="muted">Suplemento proteína premium</span><span>+ {S(dc.bd.prem)}</span></div>}
+                  {dc.bd.porc > 0 && <div className="flex justify-between"><span className="muted">Porciones adicionales</span><span>+ {S(dc.bd.porc)}</span></div>}
+                  {dc.bd.beb > 0 && <div className="flex justify-between"><span className="muted">Bebida del Día</span><span>+ {S(dc.bd.beb)}</span></div>}
+                  <div className="flex justify-between font-bold pt-1" style={{ borderTop: '1px solid var(--line)' }}><span>Total por plato</span><span>{S(unit)}</span></div>
+                </div>
                 <div className="flex items-center gap-2"><button className="btn !p-2 !rounded-full" aria-label="Menos" onClick={() => setDish((x) => ({ ...x, qty: Math.max(1, x.qty - 1) }))}><Icon n="minus" size={14} /></button><b className="num w-5 text-center">{dish.qty}</b><button className="btn !p-2 !rounded-full" aria-label="Más" onClick={() => setDish((x) => ({ ...x, qty: Math.min(9, x.qty + 1) }))}><Icon n="plus" size={14} /></button></div>
-                <button className="btn btn-p flex-1 !py-3 text-base min-w-[200px]" onClick={addToCart}>Agregar al carrito · <span className="num">{S(unit * dish.qty)}</span></button>
+                <button className="btn btn-p flex-1 !py-3 text-base min-w-[200px]" disabled={!!modalErr} onClick={addToCart}>Agregar al carrito · <span className="num">{S(unit * dish.qty)}</span></button>
+                {modalErr && <p className="w-full text-xs font-semibold" style={{ color: 'var(--danger)' }}>{modalErr}</p>}
               </div>
             </div>
           </div>
@@ -716,6 +868,17 @@ function App() {
       </div>
     );
   })();
+
+  /* Desglose de precio por unidad: base + premium + porciones (+ bebida) */
+  const priceLines = (it) => it.fixed != null ? null : (
+    <div className="text-xs num mt-2 soft px-2.5 py-1.5 flex flex-col gap-0.5">
+      <div className="flex justify-between"><span className="muted">Precio base</span><span>{S(it.base)}</span></div>
+      {it.bd.prem > 0 && <div className="flex justify-between"><span className="muted">Proteína premium</span><span>+ {S(it.bd.prem)}</span></div>}
+      {it.bd.porc > 0 && <div className="flex justify-between"><span className="muted">Porciones adicionales</span><span>+ {S(it.bd.porc)}</span></div>}
+      {it.bd.beb > 0 && <div className="flex justify-between"><span className="muted">Bebida del Día</span><span>+ {S(it.bd.beb)}</span></div>}
+      <div className="flex justify-between font-semibold"><span>Total por plato{it.qty > 1 ? ` (× ${it.qty})` : ''}</span><span>{S(unitPrice(it))}</span></div>
+    </div>
+  );
 
   /* ---- drawer ---- */
   const drawerView = drawer && (
@@ -726,8 +889,9 @@ function App() {
           {cart.length === 0 && <div className="text-center py-16 muted"><Icon n="bag" size={40} className="mx-auto mb-3 opacity-50" /><p>Tu carrito está vacío.</p><button className="btn mt-4" onClick={() => { setDrawer(false); setView('carta'); }}>Ver la carta</button></div>}
           {cart.map((it) => (
             <div key={it.uid} className="card p-3">
-              <div className="flex justify-between gap-2"><div className="min-w-0"><div className="font-bold leading-tight">{it.name}</div><div className="text-xs muted">{it.day} · {lineName(it.line)}</div></div><b className="num">{S(unitPrice(it) * it.qty)}</b></div>
+              <div className="flex justify-between gap-2"><div className="min-w-0"><div className="font-bold leading-tight">{it.name}</div><div className="text-xs muted">{it.dateLabel} · {lineName(it.line)}{it.mode ? ' · ' + MODES[it.mode].name.toLowerCase() : ''}</div></div><b className="num">{S(unitPrice(it) * it.qty)}</b></div>
               {it.notes.length > 0 && <ul className="text-xs muted mt-2 flex flex-col gap-0.5">{it.notes.map((n, i) => <li key={i}>{n}</li>)}</ul>}
+              {priceLines(it)}
               <div className="text-xs num mt-2 flex flex-wrap gap-x-3"><span>{r0(it.n.k)} kcal</span><span>P {r0(it.n.p)} g</span><span>C {r0(it.n.c)} g</span><span>G {r0(it.n.g)} g</span></div>
               <div className="flex justify-between items-center mt-2">
                 <div className="flex items-center gap-1.5"><button className="btn !p-1.5 !rounded-full" aria-label="Menos" onClick={() => setQty(it.uid, it.qty - 1)}><Icon n="minus" size={13} /></button><b className="num w-5 text-center">{it.qty}</b><button className="btn !p-1.5 !rounded-full" aria-label="Más" onClick={() => setQty(it.uid, it.qty + 1)}><Icon n="plus" size={13} /></button></div>
@@ -739,7 +903,6 @@ function App() {
         {cart.length > 0 && (
           <div className="p-4 flex flex-col gap-3" style={{ borderTop: '1px solid var(--line)', background: 'var(--surface)', paddingBottom: 'max(16px,env(safe-area-inset-bottom,0px))' }}>
             <div><div className="lbl mb-1">Macros totales del pedido</div><NutRow n={cartNut} /></div>
-            {mode === 'plan' && <div className="text-xs chip chip-m !rounded-lg">Plan semanal: {mainCount} de 5 platos. {mainCount < 5 ? 'Completa 5 para el precio de S/ 65.00.' : 'Plan completo.'}</div>}
             <div className="flex justify-between items-baseline"><span className="font-semibold">Subtotal</span><span className="display text-2xl font-extrabold num">{S(cartTotal)}</span></div>
             <button className="btn btn-p !py-3 text-base" onClick={() => { setDrawer(false); setTicket(null); setView('checkout'); }}>Elegir franja y pagar <Icon n="arrow" size={16} /></button>
           </div>
@@ -754,14 +917,14 @@ function App() {
       {ticket ? (
         <div>
           <div className="grid md:grid-cols-[auto_1fr] gap-6 card p-6" style={{ borderColor: 'var(--grn)' }}>
-            <div className="flex flex-col items-center gap-3"><QR text={`BIENSERVIDO|${ticket.code}|${SLOTS[ticket.slot]}`} /><div className="display text-xl font-extrabold num tracking-wider">{ticket.code}</div></div>
+            <div className="flex flex-col items-center gap-3"><QR text={`BIENSERVIDO|${ticket.code}|${SLOTS[ticket.slot]}`} /><div className="display text-xl font-extrabold num tracking-wider">{ticket.code}</div><div className="soft px-4 py-2 text-center"><div className="lbl">PIN de recojo</div><div className="display text-2xl font-extrabold num tracking-[0.3em]">{ticket.pin}</div></div></div>
             <div className="min-w-0">
               <span className="chip chip-g"><Icon n="check" size={13} />Pase QR de recojo</span>
               <h2 className="display text-3xl font-extrabold mt-2">¡Listo, {ticket.name.split(' ')[0]}!</h2>
-              <p className="muted text-sm">UTEC {ticket.ucode} · {MODES[ticket.mode].name}</p>
-              <p className="mt-2 flex items-start gap-2"><span style={{ color: 'var(--pri)' }}><Icon n="pin" size={18} /></span><span>Presenta este QR en el <b>Módulo Piso 1 UTEC</b>, franja <b>{SLOTS[ticket.slot]}</b>. Te entregamos en menos de 1 minuto.</span></p>
+              <p className="muted text-sm">UTEC {ticket.ucode} · {ticket.modes.length ? ticket.modes.join(' + ') : 'Snacks y postres'}</p>
+              <p className="mt-2 flex items-start gap-2"><span style={{ color: 'var(--pri)' }}><Icon n="pin" size={18} /></span><span>Presenta este QR o tu PIN en el <b>Módulo Piso 1 UTEC</b>, franja <b>{SLOTS[ticket.slot]}</b>, el <b>{[...new Set(ticket.items.map((i) => i.dateLabel))].join(', ')}</b>. Te entregamos en menos de 1 minuto.</span></p>
               {ticket.pay === 'efectivo' && <p className="chip chip-m mt-2">Pagas en efectivo en el punto. Tu plato se reserva máximo 10 minutos.</p>}
-              <ul className="mt-3 text-sm flex flex-col gap-1">{ticket.items.map((i) => <li key={i.uid} className="flex justify-between gap-3"><span>{i.qty} × {i.name}{i.notes.length ? <span className="muted"> ({i.notes.join(', ')})</span> : null}</span><b className="num">{S(i.unit * i.qty)}</b></li>)}</ul>
+              <ul className="mt-3 text-sm flex flex-col gap-1">{ticket.items.map((i) => <li key={i.uid} className="flex justify-between gap-3"><span>{i.qty} × {i.name} <span className="muted">· {i.dateLabel}</span>{i.notes.length ? <span className="muted"> ({i.notes.join(', ')})</span> : null}</span><b className="num">{S(i.unit * i.qty)}</b></li>)}</ul>
               <div className="flex justify-between mt-3 pt-3 font-bold text-lg num" style={{ borderTop: '1px solid var(--line)' }}><span>Total {ticket.pay === 'efectivo' ? 'a pagar en punto' : 'pagado (simulado)'}</span><span>{S(ticket.total)}</span></div>
               <div className="mt-4 p-4 rounded-xl" style={{ border: '2px solid var(--fg)' }}>
                 <div className="display text-lg font-extrabold">Información nutricional del pedido</div>
@@ -778,20 +941,21 @@ function App() {
             <h2 className="display text-3xl font-bold">Finaliza tu pedido</h2>
             <section className="card p-5"><div className="flex justify-between flex-wrap gap-2"><h3 className="font-bold">1. Franja de recojo · Piso 1 UTEC</h3><span className="chip chip-g"><Icon n="clock" size={13} />11:00 a.m. – 6:00 p.m.</span></div>
               <p className="text-sm muted mt-1">Ventanas de 30 minutos. Sin límite de pedidos por franja: puedes recoger junto a otros estudiantes.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-3">{SLOTS.map((s, i) => <button key={s} aria-pressed={slot === i} onClick={() => setSlot(i)} className={'soft p-3 text-sm font-semibold num ' + (slot === i ? 'sel' : '')}>{s}</button>)}</div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-3">{SLOTS.map((s, i) => <button key={s} aria-pressed={slot === i} disabled={slotPast(i)} onClick={() => setSlot(i)} className={'soft p-3 text-sm font-semibold num ' + (slot === i ? 'sel' : '')} style={slotPast(i) ? { opacity: 0.4, cursor: 'not-allowed' } : null}>{s}</button>)}</div>
               {touched && errs.slot && <p className="text-xs mt-2" style={{ color: 'var(--danger)' }}>{errs.slot}</p>}</section>
             <section className="card p-5 grid sm:grid-cols-2 gap-4"><h3 className="font-bold sm:col-span-2">2. Tus datos</h3>
               <div className="sm:col-span-2"><label htmlFor="f-name" className="text-sm font-semibold">Nombre completo</label><input id="f-name" className="inp mt-1" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />{touched && errs.name && <p className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{errs.name}</p>}</div>
               <div><label htmlFor="f-code" className="text-sm font-semibold">Código UTEC</label><input id="f-code" inputMode="numeric" className="inp mt-1 num" placeholder="202310123" value={form.ucode} onChange={(e) => setForm({ ...form, ucode: e.target.value.replace(/\D/g, '').slice(0, 9) })} />{touched && errs.ucode && <p className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{errs.ucode}</p>}</div>
               <div><label htmlFor="f-phone" className="text-sm font-semibold">WhatsApp</label><input id="f-phone" inputMode="numeric" className="inp mt-1 num" placeholder="987654321" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 9) })} />{touched && errs.phone && <p className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{errs.phone}</p>}</div></section>
             <section className="card p-5"><h3 className="font-bold mb-3">3. Medio de pago</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">{[['yape', 'Yape'], ['plin', 'Plin'], ['tarjeta', 'Tarjeta'], ['efectivo', 'Efectivo en punto']].map(([k, n]) => { const off = k === 'efectivo' && mode !== 'mismo'; return <button key={k} disabled={off} aria-pressed={pay === k} onClick={() => setPay(k)} className={'soft p-3 text-sm font-semibold ' + (pay === k ? 'sel' : '')} style={off ? { opacity: 0.45, cursor: 'not-allowed' } : null}>{n}{off && <div className="text-[10px] muted font-normal">solo mismo día</div>}</button>; })}</div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">{[['yape', 'Yape'], ['plin', 'Plin'], ['tarjeta', 'Tarjeta'], ['efectivo', 'Efectivo en punto']].map(([k, n]) => { const off = k === 'efectivo' && !efectivoOk; return <button key={k} disabled={off} aria-pressed={pay === k} onClick={() => setPay(k)} className={'soft p-3 text-sm font-semibold ' + (pay === k ? 'sel' : '')} style={off ? { opacity: 0.45, cursor: 'not-allowed' } : null}>{n}{off && <div className="text-[10px] muted font-normal">solo mismo día</div>}</button>; })}</div>
               {pay === 'efectivo' ? <p className="chip chip-m mt-3">Pagas al recoger. Tu plato se reserva máximo 10 minutos.</p> : <p className="text-sm muted mt-3">Simulación: no se procesa ningún pago real ni se piden datos de tarjeta.</p>}</section>
           </div>
           <aside className="card p-5 flex flex-col gap-3 lg:sticky" style={{ top: 90 }}>
             <h3 className="display text-xl font-bold">Tu pedido</h3>
             {cart.length === 0 && <p className="muted text-sm">Tu carrito está vacío.</p>}
-            {cart.map((i) => <div key={i.uid} className="text-sm"><div className="flex justify-between gap-2"><span>{i.qty} × {i.name}</span><b className="num">{S(unitPrice(i) * i.qty)}</b></div>{i.notes.length > 0 && <div className="text-xs muted">{i.notes.join(' · ')}</div>}</div>)}
+            {cart.map((i) => <div key={i.uid} className="text-sm"><div className="flex justify-between gap-2"><span>{i.qty} × {i.name} <span className="muted text-xs">· {i.dateLabel}</span></span><b className="num">{S(unitPrice(i) * i.qty)}</b></div>{i.notes.length > 0 && <div className="text-xs muted">{i.notes.join(' · ')}</div>}{priceLines(i)}</div>)}
+            {stockErrs.length > 0 && <ul className="text-xs font-semibold flex flex-col gap-1" style={{ color: 'var(--danger)' }}>{stockErrs.map((e) => <li key={e}>{e}</li>)}</ul>}
             <NutRow n={cartNut} />
             <div className="flex justify-between items-baseline pt-3" style={{ borderTop: '1px solid var(--line)' }}><span className="font-semibold">Total</span><span className="display text-3xl font-extrabold num">{S(cartTotal)}</span></div>
             <button className="btn btn-p !py-3 text-base" disabled={!cart.length} onClick={confirmOrder}>Confirmar y generar mi QR</button>
@@ -809,7 +973,7 @@ function App() {
   const cur = ING[pickId];
   const calcView = (
     <div className="pop py-8 flex flex-col gap-6">
-      <div><span className="chip chip-m"><Icon n="calc" size={13} />Línea personalizada</span><h2 className="display text-3xl md:text-4xl font-extrabold mt-2">Arma tu almuerzo por macros</h2><p className="muted">Calculadora TDEE (Mifflin-St Jeor). Tu almuerzo debe aportar el 35% de tu meta del día.</p></div>
+      <div><span className="chip chip-m"><Icon n="calc" size={13} />Línea personalizada</span><h2 className="display text-3xl md:text-4xl font-extrabold mt-2">Arma tu almuerzo por macros</h2><p className="muted">Calculadora TDEE (Mifflin-St Jeor). Tu almuerzo debe aportar el 35% de tu meta del día.</p><p className="text-xs muted mt-1">Valores nutricionales estimados con fines referenciales. No reemplazan una evaluación nutricional individual.</p></div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpi('TMB base', r0(tmb).toLocaleString('es-PE'), 'kcal/día', 'Mifflin-St Jeor, en reposo')}
         {kpi('TDEE mantenimiento', r0(tdee).toLocaleString('es-PE'), 'kcal/día', `TMB × ${act}`)}
@@ -837,7 +1001,7 @@ function App() {
       <section className="card p-5 md:p-6">
         <div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="display text-xl font-bold">Armador por gramos</h3><p className="text-sm muted">Cocina aliada con balanza: eliges el ingrediente y los gramos exactos.</p></div>{example && <span className="chip chip-m">Plato de ejemplo, edítalo</span>}</div>
         <div className="flex flex-wrap gap-2 mt-4" role="tablist">{Object.entries(CATS).map(([k, v]) => <button key={k} role="tab" aria-selected={pickCat === k} className="tab" onClick={() => { setPickCat(k); setPickId(Object.values(ING).find((i) => i.cat === k).id); }}>{v.name}</button>)}</div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3">{Object.values(ING).filter((i) => i.cat === pickCat).map((i) => <button key={i.id} onClick={() => setPickId(i.id)} aria-pressed={pickId === i.id} className={'soft p-2.5 text-left flex items-center gap-3 ' + (pickId === i.id ? 'sel' : '')}><IngIcon k={i.id} size={44} /><div className="min-w-0"><div className="font-semibold text-sm">{i.n}</div><div className="text-xs muted num">{i.k} kcal · P {i.p} · C {i.c} · G {i.g} /100 g</div></div></button>)}</div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3">{Object.values(ING).filter((i) => i.cat === pickCat).map((i) => { const out = avail(i.id) <= 0; return <button key={i.id} disabled={out} onClick={() => setPickId(i.id)} aria-pressed={pickId === i.id} className={'soft p-2.5 text-left flex items-center gap-3 ' + (pickId === i.id ? 'sel' : '')} style={out ? { opacity: 0.5, cursor: 'not-allowed' } : null}><IngIcon k={i.id} size={44} /><div className="min-w-0"><div className="font-semibold text-sm">{i.n}{PREMIUM[i.id] && <span className="chip chip-p ml-1.5 !py-0">premium</span>}{out && <span className="chip ml-1.5 !py-0" style={{ color: 'var(--danger)' }}>Agotado</span>}</div><div className="text-xs muted num">{i.k} kcal · P {i.p} · C {i.c} · G {i.g} /100 g</div></div></button>; })}</div>
         <div className="flex flex-wrap items-end gap-3 mt-4">
           <div style={{ width: 130 }}><label htmlFor="pick-g" className="lbl">Gramos</label><input id="pick-g" type="number" min="1" max="1000" className="inp mt-1 num" value={pickG} onChange={(e) => setPickG(e.target.value)} onFocus={(e) => e.target.select()} /></div>
           <div className="text-sm muted num pb-2">{cur.n}: <b style={{ color: 'var(--fg)' }}>{r0(cur.k * (Number(pickG) || 0) / 100)} kcal</b> · {r1(cur.p * (Number(pickG) || 0) / 100)} g P</div>
@@ -849,11 +1013,14 @@ function App() {
           {plate.length > 0 && <tfoot className="num"><tr style={{ background: 'var(--surface2)' }}><td className="font-bold">Total del plato</td><td className="font-bold">{r0(pt.grams)} g</td><td className="font-bold">{r0(pt.k)}</td><td className="font-bold">{r1(pt.p)}</td><td className="font-bold">{r1(pt.c)}</td><td className="font-bold">{r1(pt.g)}</td><td /></tr></tfoot>}</table></div>
         <div className="grid md:grid-cols-[1fr_auto] gap-5 items-end mt-5">
           <div className="text-sm num flex flex-col gap-1 max-w-sm"><div className="lbl mb-1">Precio de tu plato</div>
-            <div className="flex justify-between gap-6"><span className="muted">Base ({MODES[mode].name.toLowerCase()})</span><span>{plate.length ? S(base) : S(0)}</span></div>
-            <div className="flex justify-between gap-6"><span className="muted">Ajuste por exceso de gramaje</span><span>+ {S(plateAdj)}</span></div>
-            <div className="flex justify-between gap-6 font-bold text-lg pt-1" style={{ borderTop: '1px solid var(--line)' }}><span>Total</span><span style={{ color: 'var(--pri)' }}>{S(plate.length ? base + plateAdj : 0)}</span></div>
-            <div className="text-xs muted mt-1">Gramaje estándar: proteína {CATS.prot.std} g · carbos y menestras {CATS.carb.std} g · verduras y grasas {CATS.veg.std} g. El exceso se cobra a prorrata.</div></div>
-          <button className="btn btn-p !py-3" disabled={!plate.length || pt.k <= 0} onClick={addCustom}><Icon n="bag" size={16} />Agregar mi plato personalizado al carrito</button>
+            <div className="flex justify-between gap-6"><span className="muted">Precio base ({MODES[mode].name.toLowerCase()})</span><span>{plate.length ? S(base) : S(0)}</span></div>
+            {cp.bd.prem > 0 && <div className="flex justify-between gap-6"><span className="muted">Suplemento proteína premium</span><span>+ {S(cp.bd.prem)}</span></div>}
+            {cp.lines.map(([t, v]) => <div key={t} className="flex justify-between gap-6"><span className="muted">{t}</span><span>+ {S(v)}</span></div>)}
+            <div className="flex justify-between gap-6 font-bold text-lg pt-1" style={{ borderTop: '1px solid var(--line)' }}><span>Total</span><span style={{ color: 'var(--pri)' }}>{S(plate.length ? base + cp.extra : 0)}</span></div>
+            <div className="text-xs muted mt-1">Incluye proteína {GSTD.prot} g, carbohidrato {GSTD.carb} g y verduras {GSTD.veg} g. Cada 50 g adicionales: pollo, huevo o tofu {S(SUP.pollo)} · pescado o res {S(SUP.premium)} (más {S(SUP.swap)} una vez por ser premium) · quinua, arroz integral o menestras {S(SUP.quinua)} · verduras {S(SUP.verduras)} · palta {S(SUP.palta)}. Máximo 150 g adicionales por grupo.</div>
+            <div className="text-xs mt-1">{lunchDate(day, mode).ok ? <>Para: <b>{lunchDate(day, mode).label}</b> · {MODES[mode].name}</> : <span style={{ color: 'var(--danger)' }}>{lunchDate(day, mode).why}</span>}</div></div>
+          <button className="btn btn-p !py-3" disabled={!plate.length || pt.k <= 0 || cp.missing.length > 0 || !lunchDate(day, mode).ok} onClick={addCustom}><Icon n="bag" size={16} />Agregar mi plato personalizado al carrito</button>
+          {cp.missing.length > 0 && plate.length > 0 && <p className="text-xs md:col-span-2" style={{ color: 'var(--danger)' }}>Para armar tu plato elige {cp.missing.join(', ')}.</p>}
         </div>
       </section>
     </div>
