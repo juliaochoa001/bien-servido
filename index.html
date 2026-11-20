@@ -281,6 +281,11 @@ function lunchDate(dayIdx, mode, now = new Date()) {
 }
 /* Tarifa automática: si el día elegido es hoy (y aún hay atención) aplica "mismo día"; si es un día futuro, "anticipado" */
 function autoMode(dayIdx, now = new Date()) { return wdOf(now) === dayIdx && now.getHours() < CLOSE_H ? 'mismo' : 'anticipado'; }
+/* Plato personalizado: solo pedido anticipado. Si el día elegido es hoy (o ya cerró), pasa al siguiente día hábil disponible */
+function customDay(dayIdx, now = new Date()) {
+  for (let s = 0; s < 6; s++) { const i = (dayIdx + s) % 5; if (i === wdOf(now)) continue; if (lunchDate(i, 'anticipado', now).ok) return i; }
+  return dayIdx;
+}
 function extraDate(dayIdx, now = new Date()) {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   if (wdOf(today) === dayIdx && now.getHours() < CLOSE_H) return mkDate(today, true);
@@ -510,6 +515,7 @@ function App() {
   const [view, setView] = useState('carta'); // carta | calc | checkout
   const [day, setDay] = useState(todayIdx);
   const mode = autoMode(day);
+  const cDay = customDay(day); const cDt = lunchDate(cDay, 'anticipado'); const cBase = MODES.anticipado.price;
   const [cat, setCat] = useState('all');
   const [stock, setStock] = useState(12);
   const [cart, setCart] = useState([]);
@@ -579,11 +585,11 @@ function App() {
     setDish(null); setToast('Agregado al carrito');
   };
   const addCustom = () => {
-    const dt = lunchDate(day, mode); const use = {}; plate.forEach((r) => { use[r.id] = (use[r.id] || 0) + r.g; });
+    const dt = cDt; const use = {}; plate.forEach((r) => { use[r.id] = (use[r.id] || 0) + r.g; });
     if (cp.missing.length) { setToast(`Elige ${cp.missing.join(', ')}.`); return; }
-    const err = checkLunch(dt, mode, use, 1); if (err) { setToast(err); return; }
+    const err = checkLunch(dt, 'anticipado', use, 1); if (err) { setToast(err); return; }
     const t = plate.reduce((a, r) => addN(a, scaled(r.id, r.g), 1), zero());
-    setCart((c) => [...c, { uid: newId(), line: 'custom', name: 'Plato personalizado', dayIdx: day, date: dt.key, dateLabel: dt.label, isToday: dt.isToday, mode, base, qty: 1, n: t, notes: plate.map((r) => `${ING[r.id].n}: ${r.g} g`), extraCost: cp.extra, bd: cp.bd, use }]);
+    setCart((c) => [...c, { uid: newId(), line: 'custom', name: 'Plato personalizado', dayIdx: cDay, date: dt.key, dateLabel: dt.label, isToday: dt.isToday, mode: 'anticipado', base: cBase, qty: 1, n: t, notes: plate.map((r) => `${ING[r.id].n}: ${r.g} g`), extraCost: cp.extra, bd: cp.bd, use }]);
     setToast('Plato personalizado agregado'); setDrawer(true);
   };
   const setQty = (uid, q) => {
@@ -788,7 +794,7 @@ function App() {
         <article className="card dish p-5 flex flex-col gap-3" style={{ background: 'var(--mos-soft)', borderColor: 'var(--mos)' }}>
           <span className="chip chip-m self-start"><Icon n="calc" size={13} />Para quienes entrenan</span>
           <h3 className="display text-xl font-bold">Arma tu plato por gramos</h3>
-          <p className="text-sm">Calcula tu TDEE, mira cuántos macros necesitas en el almuerzo y pesa cada ingrediente. El precio parte desde {S(base)} y suma los suplementos según el gramaje.</p>
+          <p className="text-sm">Calcula tu TDEE, mira cuántos macros necesitas en el almuerzo y pesa cada ingrediente. Solo con pedido anticipado: el precio parte desde {S(MODES.anticipado.price)} y suma los suplementos según el gramaje.</p>
           <button className="btn btn-p mt-auto" onClick={() => setView('calc')}>Abrir la calculadora <Icon n="arrow" size={16} /></button>
         </article>
       </div>
@@ -1000,7 +1006,7 @@ function App() {
   const cur = ING[pickId];
   const calcView = (
     <div className="pop py-8 flex flex-col gap-6">
-      <div><span className="chip chip-m"><Icon n="calc" size={13} />Línea personalizada</span><h2 className="display text-3xl md:text-4xl font-extrabold mt-2">Arma tu almuerzo por macros</h2><p className="muted">Calculadora TDEE (Gasto Energético Total Diario). Tu almuerzo debe aportar el 35% de tu meta del día.</p><p className="text-xs muted mt-1">Valores nutricionales estimados con fines referenciales. No reemplazan una evaluación nutricional individual.</p></div>
+      <div><span className="chip chip-m"><Icon n="calc" size={13} />Línea personalizada</span><h2 className="display text-3xl md:text-4xl font-extrabold mt-2">Arma tu almuerzo por macros</h2><p className="muted">Calculadora TDEE (Gasto Energético Total Diario). Tu almuerzo debe aportar el 35% de tu meta del día.</p><p className="text-xs muted mt-1">Valores nutricionales estimados con fines referenciales. No reemplazan una evaluación nutricional individual.</p><p className="chip mt-2" style={{ background: 'var(--sage-soft)', color: 'var(--sage-soft-fg)', border: '1px solid var(--sage-line)' }}><Icon n="clock" size={13} />Disponible solo con pedido anticipado (hasta las 9:00 p. m. del día anterior).</p></div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpi('TMB base', r0(tmb).toLocaleString('es-PE'), 'kcal/día', 'Mifflin-St Jeor (método recomendado para calcular la Tasa Metabólica Basal)')}
         {kpi('TDEE mantenimiento', r0(tdee).toLocaleString('es-PE'), 'kcal/día', `TMB × ${act}`)}
@@ -1065,13 +1071,13 @@ function App() {
           {plate.length > 0 && <tfoot className="num"><tr style={{ background: 'var(--surface2)' }}><td className="font-bold">Total del plato</td><td className="font-bold">{r0(pt.grams)} g</td><td className="font-bold">{r0(pt.k)}</td><td className="font-bold">{r1(pt.p)}</td><td className="font-bold">{r1(pt.c)}</td><td className="font-bold">{r1(pt.g)}</td><td /></tr></tfoot>}</table></div>
         <div className="grid md:grid-cols-[1fr_auto] gap-5 items-end mt-5">
           <div className="text-sm num flex flex-col gap-1 max-w-sm"><div className="lbl mb-1">Precio de tu plato</div>
-            <div className="flex justify-between gap-6"><span className="muted">Precio base ({MODES[mode].name.toLowerCase()})</span><span>{plate.length ? S(base) : S(0)}</span></div>
+            <div className="flex justify-between gap-6"><span className="muted">Precio base (pedido anticipado)</span><span>{plate.length ? S(cBase) : S(0)}</span></div>
             {cp.bd.prem > 0 && <div className="flex justify-between gap-6"><span className="muted">Suplemento proteína premium</span><span>+ {S(cp.bd.prem)}</span></div>}
             {cp.lines.map(([t, v]) => <div key={t} className="flex justify-between gap-6"><span className="muted">{t}</span><span>+ {S(v)}</span></div>)}
-            <div className="flex justify-between gap-6 font-bold text-lg pt-1" style={{ borderTop: '1px solid var(--line)' }}><span>Total</span><span style={{ color: 'var(--pri)' }}>{S(plate.length ? base + cp.extra : 0)}</span></div>
+            <div className="flex justify-between gap-6 font-bold text-lg pt-1" style={{ borderTop: '1px solid var(--line)' }}><span>Total</span><span style={{ color: 'var(--pri)' }}>{S(plate.length ? cBase + cp.extra : 0)}</span></div>
             <div className="text-xs muted mt-1">Incluye proteína {GSTD.prot} g, carbohidrato {GSTD.carb} g y verduras {GSTD.veg} g. Cada 50 g adicionales: pollo, huevo o tofu {S(SUP.pollo)} · pescado o res {S(SUP.premium)} (más {S(SUP.swap)} una vez por ser premium) · quinua, arroz integral o menestras {S(SUP.quinua)} · verduras {S(SUP.verduras)} · palta {S(SUP.palta)}. Máximo 150 g adicionales por grupo.</div>
-            <div className="text-xs mt-1">{lunchDate(day, mode).ok ? <>Para: <b>{lunchDate(day, mode).label}</b> · {MODES[mode].name}</> : <span style={{ color: 'var(--danger)' }}>{lunchDate(day, mode).why}</span>}</div></div>
-          <button className="btn btn-p !py-3" disabled={!plate.length || pt.k <= 0 || cp.missing.length > 0 || !lunchDate(day, mode).ok} onClick={addCustom}><Icon n="bag" size={16} />Agregar mi plato personalizado al carrito</button>
+            <div className="text-xs mt-1">{cDt.ok ? <>Para: <b>{cDt.label}</b> · Pedido anticipado (hasta las 9:00 p. m. del día anterior)</> : <span style={{ color: 'var(--danger)' }}>{cDt.why}</span>}</div></div>
+          <button className="btn btn-p !py-3" disabled={!plate.length || pt.k <= 0 || cp.missing.length > 0 || !cDt.ok} onClick={addCustom}><Icon n="bag" size={16} />Agregar mi plato personalizado al carrito</button>
           {cp.missing.length > 0 && plate.length > 0 && <p className="text-xs md:col-span-2" style={{ color: 'var(--danger)' }}>Para armar tu plato elige {cp.missing.join(', ')}.</p>}
         </div>
       </section>
