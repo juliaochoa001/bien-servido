@@ -172,7 +172,7 @@ const BEB_PRICE = 1.5;
 const scaled = (id, grams) => { const i = ING[id], m = grams / 100; return { k: i.k * m, p: i.p * m, c: i.c * m, g: i.g * m, f: (i.f || 0) * m }; };
 /* Datos de cada adicional: precio por bloque, máximo, ingrediente de inventario que consume y nutrición por bloque */
 function extraInfo(id, idx, prot) {
-  if (id === 'bebida') return { id, n: 'Bebida del Día: ' + BEB[idx].n, price: BEB_PRICE, max: 1, inv: 'beb' + idx, unit: 1, kind: 'beb', icon: 'bebida', nut: { k: BEB[idx].k, p: 0, c: BEB[idx].c, g: 0, f: 0 } };
+  if (id === 'bebida') return { id, n: 'Bebida del Día (350 ml): ' + BEB[idx].n, price: BEB_PRICE, max: 1, inv: 'beb' + idx, unit: 1, kind: 'beb', icon: 'bebida', nut: { k: BEB[idx].k, p: 0, c: BEB[idx].c, g: 0, f: 0 } };
   if (id === 'prot') return { id, n: `+50 g de ${ING[prot].short}`, price: PREMIUM[prot] ? SUP.premium : SUP.pollo, max: MAX_BLOCKS, inv: prot, unit: BLOCK_G, kind: 'porc', icon: prot, nut: scaled(prot, BLOCK_G) };
   if (id === 'hv') return { id, n: '+50 g de huevo / tofu', price: SUP.pollo, max: MAX_BLOCKS, inv: 'tofu', unit: BLOCK_G, kind: 'porc', icon: 'huevo', nut: scaled('tofu', BLOCK_G) };
   const [inv, n, price, icon] = { quinua: ['quinua', '+50 g de quinua', SUP.quinua, 'quinua'], arroz: ['arroz', '+50 g de arroz integral', SUP.arroz, 'arroz'], verduras: ['mix', '+50 g de verduras', SUP.verduras, 'ensalada'], palta: ['palta', '+50 g de palta', SUP.palta, 'palta'] }[id];
@@ -674,11 +674,11 @@ function App() {
       <section className="rounded-3xl overflow-hidden grid sm:grid-cols-[200px_1fr] items-stretch" style={{ background: 'var(--mos-soft)', border: '1px solid var(--mos)' }} aria-label="Bebida natural del día">
         <DishPhoto line="bebida" idx={day} name={b.n} style={{ minHeight: 170, height: '100%' }} />
         <div className="p-5 flex flex-col gap-2 min-w-0">
-          <div className="flex flex-wrap gap-2 items-center"><span className="chip" style={{ background: 'var(--mos)', color: '#3b2a00' }}>🥤 Bebida Natural del Día · {DAYS[day]}</span><span className="chip chip-g">{b.tag}</span><span className="chip num">{b.k} kcal</span></div>
+          <div className="flex flex-wrap gap-2 items-center"><span className="chip" style={{ background: 'var(--mos)', color: '#3b2a00' }}>🥤 Bebida Natural del Día · {DAYS[day]}</span><span className="chip chip-g">{b.tag}</span><span className="chip num">350 ml</span><span className="chip num">{b.k} kcal</span></div>
           <h3 className="display text-xl font-bold leading-tight">{b.n}</h3>
           <p className="text-sm muted">{b.d}</p>
           <div className="mt-auto flex items-center justify-between gap-3 flex-wrap"><div className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>+ {S(BEB_PRICE)}</div>
-            <button className="btn btn-p" disabled={!!why} onClick={() => addFixed('beb' + day, 'bebida', 'Bebida del Día: ' + b.n, BEB_PRICE, { k: b.k, p: 0, c: b.c, g: 0, f: 0 }, { ok: true, key: lunch.date, label: lunch.dateLabel, isToday: lunch.isToday })}><Icon n="plus" size={16} />Agregar por {S(BEB_PRICE)}</button></div>
+            <button className="btn btn-p" disabled={!!why} onClick={() => addFixed('beb' + day, 'bebida', 'Bebida del Día (350 ml): ' + b.n, BEB_PRICE, { k: b.k, p: 0, c: b.c, g: 0, f: 0 }, { ok: true, key: lunch.date, label: lunch.dateLabel, isToday: lunch.isToday })}><Icon n="plus" size={16} />Agregar por {S(BEB_PRICE)}</button></div>
           {why && <p className="text-xs muted">{why}</p>}
         </div>
       </section>
