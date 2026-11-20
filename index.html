@@ -647,6 +647,24 @@ function App() {
   /* Franjas: si algo se recoge hoy, no se pueden elegir franjas que ya terminaron */
   const nowMin = (() => { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); })();
   const slotPast = (i) => cart.some((it) => it.isToday) && 690 + i * 30 <= nowMin;
+  /* Fuera de horario (después de las 6:00 p.m. o sábado/domingo): no hay recojo hoy; se elige un día hábil futuro.
+     El día elegido se aplica a snacks y postres; los almuerzos (y su bebida) mantienen la fecha de su menú. */
+  const nowD = new Date();
+  const afterHours = wdOf(nowD) > 4 || nowD.getHours() >= CLOSE_H;
+  const pickDays = [];
+  for (let s = 1; s < 7; s++) { const dt = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + s); if (wdOf(dt) <= 4) { const r = lunchDate(wdOf(dt), 'anticipado', nowD); if (r.ok) pickDays.push(r); } }
+  const [pickKey, setPickKey] = useState(null);
+  const pick = pickDays.find((d) => d.key === pickKey) || pickDays[0];
+  const isFlex = (i) => i.fixed != null && i.line !== 'bebida';
+  const moveFlex = (c, dt) => c.reduce((acc, i) => {
+    if (!isFlex(i) || i.date === dt.key) { acc.push({ ...i }); return acc; }
+    const ex = acc.find((x) => isFlex(x) && x.key === i.key && x.date === dt.key);
+    if (ex) ex.qty += i.qty; else acc.push({ ...i, date: dt.key, dateLabel: dt.label, isToday: false });
+    return acc;
+  }, []);
+  useEffect(() => { if (view === 'checkout' && afterHours && pick && cart.some((i) => isFlex(i) && i.date !== pick.key)) setCart((c) => moveFlex(c, pick)); }, [view, afterHours, pick && pick.key, cart]);
+  /* Franja por defecto: la primera disponible (la franja en curso si el pedido es para hoy) */
+  useEffect(() => { if (view === 'checkout' && (slot === null || slotPast(slot))) { const f = SLOTS.findIndex((_, i) => !slotPast(i)); setSlot(f < 0 ? null : f); } }, [view, cart, slot]);
   /* Verificación de disponibilidad antes de confirmar: fechas, platos del día, ingredientes, complementos y bebidas con almuerzo */
   const stockErrs = (() => {
     const out = [];
@@ -981,6 +999,9 @@ function App() {
             <h2 className="display text-3xl font-bold">Finaliza tu pedido</h2>
             <section className="card p-5"><div className="flex justify-between flex-wrap gap-2"><h3 className="font-bold">1. Franja de recojo · Piso 1 UTEC</h3><span className="chip chip-g"><Icon n="clock" size={13} />11:00 a.m. – 6:00 p.m.</span></div>
               <p className="text-sm muted mt-1">Ventanas de 30 minutos. Sin límite de pedidos por franja: puedes recoger junto a otros estudiantes.</p>
+              {afterHours && pick && <div className="mt-3"><p className="text-sm font-semibold">{wdOf(nowD) > 4 ? 'Hoy no hay atención.' : 'La atención de hoy terminó a las 6:00 p.m.'} Elige el día de recojo:</p>
+                <div className="flex gap-2 overflow-x-auto mt-2" role="tablist" aria-label="Día de recojo">{pickDays.map((d) => <button key={d.key} role="tab" className="tab tab-day" aria-selected={pick.key === d.key} onClick={() => setPickKey(d.key)}>{d.label}</button>)}</div>
+                {cart.some((i) => !isFlex(i)) && <p className="text-xs muted mt-2">Los almuerzos y su bebida se recogen en la fecha de su menú.</p>}</div>}
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-3">{SLOTS.map((s, i) => <button key={s} aria-pressed={slot === i} disabled={slotPast(i)} onClick={() => setSlot(i)} className={'soft p-3 text-sm font-semibold num ' + (slot === i ? 'sel' : '')} style={slotPast(i) ? { opacity: 0.4, cursor: 'not-allowed' } : null}>{s}</button>)}</div>
               {touched && errs.slot && <p className="text-xs mt-2" style={{ color: 'var(--danger)' }}>{errs.slot}</p>}</section>
             <section className="card p-5 grid sm:grid-cols-2 gap-4"><h3 className="font-bold sm:col-span-2">2. Tus datos</h3>
