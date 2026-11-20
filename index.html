@@ -257,11 +257,13 @@ const MODES = {
 };
 const hhmm = (mins) => { const h = Math.floor(mins / 60), mm = String(mins % 60).padStart(2, '0'); return `${h % 12 === 0 ? 12 : h % 12}:${mm} ${h < 12 ? 'a.m.' : 'p.m.'}`; };
 const SLOTS = Array.from({ length: 14 }, (_, i) => `${hhmm(660 + i * 30)} – ${hhmm(690 + i * 30)}`);
-/* Stock simulado del día: ingredientes en gramos (porciones extra, sustituciones y armador) y complementos en unidades */
-const INV0 = {
-  pollo: 6000, pescado: 4000, res: 0, tofu: 3000, huevo: 3000, quinua: 8000, arroz: 8000, camote: 3000, papa: 3000, lentejas: 3000, frejoles: 3000, mix: 8000, palta: 150,
-  s1: 8, s2: 6, s3: 5, p1: 12, p2: 0, p3: 4, beb0: 30, beb1: 30, beb2: 30, beb3: 30, beb4: 30,
+/* Stock simulado POR FECHA: ingredientes en gramos (porciones extra, sustituciones y armador) y complementos en unidades.
+   Cada día futuro empieza con INV_DEFAULT; hoy parte de INV_DEFAULT con lo que ya se agotó hoy (INV_TODAY). */
+const INV_DEFAULT = {
+  pollo: 6000, pescado: 4000, res: 4000, tofu: 3000, huevo: 3000, quinua: 8000, arroz: 8000, camote: 3000, papa: 3000, lentejas: 3000, frejoles: 3000, mix: 8000, palta: 3000,
+  s1: 8, s2: 6, s3: 5, p1: 12, p2: 10, p3: 4, beb0: 30, beb1: 30, beb2: 30, beb3: 30, beb4: 30,
 };
+const INV_TODAY = { res: 0, palta: 150, p2: 0 };
 /* Fechas de entrega: anticipado = próximo día elegido (cierra 9:00 p.m. del día anterior); mismo día = solo hoy */
 const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 const DSH = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
@@ -527,7 +529,9 @@ function App() {
   const [pay, setPay] = useState('yape');
   const [touched, setTouched] = useState(false);
   const [ticket, setTicket] = useState(null);
-  const [inv, setInv] = useState(INV0);
+  const [invByDate, setInvByDate] = useState({});
+  const todayKey = mkDate(new Date(), true).key;
+  const invFor = (dk) => invByDate[dk] || (dk === todayKey ? { ...INV_DEFAULT, ...INV_TODAY } : INV_DEFAULT);
 
   /* calculadora */
   const [sex, setSex] = useState('H'); const [age, setAge] = useState(23); const [weight, setWeight] = useState(70); const [height, setHeight] = useState(172);
@@ -552,16 +556,18 @@ function App() {
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
   const mainCount = cart.filter((i) => i.fixed == null).reduce((s, i) => s + i.qty, 0);
   const mismoInCart = cart.filter((i) => i.fixed == null && i.mode === 'mismo').reduce((s, i) => s + i.qty, 0);
-  const usedInCart = (k, items = cart) => items.reduce((s, i) => s + ((i.use && i.use[k]) || 0) * i.qty, 0);
-  const avail = (k) => (inv[k] == null ? Infinity : inv[k] - usedInCart(k));
+  /* Uso y disponibilidad de un insumo en una fecha concreta (dk); el stock de cada fecha es independiente */
+  const usedInCart = (k, items, dk) => items.reduce((s, i) => s + (i.date === dk && i.use && i.use[k] ? i.use[k] * i.qty : 0), 0);
+  const avail = (k, dk) => { const s = invFor(dk)[k]; return s == null ? Infinity : s - usedInCart(k, cart, dk); };
   const lunchFor = (key) => cart.some((i) => i.fixed == null && i.date === key);
   const newId = () => Math.random().toString(36).slice(2);
   const addFixed = (key, line, name, price, n, dt) => {
-    if (avail(key) < 1) { setToast(inv[key] > 0 ? 'No quedan más unidades disponibles' : 'Producto agotado'); return; }
+    if (avail(key, dt.key) < 1) { setToast(invFor(dt.key)[key] > 0 ? 'No quedan más unidades disponibles' : `Producto agotado para el ${dt.label}`); return; }
     setCart((c) => (c.some((i) => i.key === key && i.date === dt.key) ? c.map((i) => (i.key === key && i.date === dt.key ? { ...i, qty: i.qty + 1 } : i)) : [...c, { uid: newId(), key, line, name, date: dt.key, dateLabel: dt.label, isToday: dt.isToday, qty: 1, n, notes: [], use: { [key]: 1 }, fixed: price }]));
     setToast('Agregado al carrito');
   };
   const cartTotal = cart.reduce((s, i) => s + unitPrice(i) * i.qty, 0);
+  const cartDates = [...new Set(cart.map((i) => i.date))];
   const cartNut = cart.reduce((a, i) => addN(a, i.n, i.qty), zero());
 
   /* ---- personalizador ---- */
@@ -573,8 +579,8 @@ function App() {
     if (!dt.ok) return dt.why;
     if (md === 'mismo' && items.filter((i) => i.fixed == null && i.mode === 'mismo').reduce((s, i) => s + i.qty, 0) + qty > stock) return stock > 0 ? `Solo quedan ${stock} platos para hoy.` : 'Se agotaron los platos de hoy.';
     for (const k of Object.keys(use)) {
-      const left = (inv[k] ?? Infinity) - usedInCart(k, items);
-      if (use[k] * qty > left) { const name = k.startsWith('beb') ? 'bebida del día' : ING[k].short; return left > 0 ? `No hay suficiente ${name} para esa cantidad.` : `Agotado hoy: ${name}.`; }
+      const left = (invFor(dt.key)[k] ?? Infinity) - usedInCart(k, items, dt.key);
+      if (use[k] * qty > left) { const name = k.startsWith('beb') ? 'bebida del día' : ING[k].short; return left > 0 ? `No hay suficiente ${name} para esa cantidad.` : `Agotado para el ${dt.label}: ${name}.`; }
     }
     return '';
   };
@@ -597,7 +603,7 @@ function App() {
     if (q <= 0) { setCart((c) => c.filter((i) => i.uid !== uid)); return; }
     if (q > it.qty) {
       const others = cart.filter((i) => i.uid !== uid);
-      const err = it.fixed != null ? (avail(it.key) < q - it.qty ? 'No quedan más unidades disponibles' : '') : checkLunch({ ok: true }, it.mode, it.use || {}, q, others);
+      const err = it.fixed != null ? (avail(it.key, it.date) < q - it.qty ? 'No quedan más unidades disponibles' : '') : checkLunch({ ok: true, key: it.date, label: it.dateLabel }, it.mode, it.use || {}, q, others);
       if (err) { setToast(err); return; }
     }
     setCart((c) => c.map((i) => (i.uid === uid ? { ...i, qty: q } : i)));
@@ -612,9 +618,9 @@ function App() {
   /* Máximo de gramos que puede tener un ingrediente: tope del grupo (estándar + 150 g) y stock disponible */
   const maxFor = (id, pl) => {
     const grp = GROUP[id]; const others = pl.filter((r) => r.id !== id && GROUP[r.id] === grp).reduce((s, r) => s + r.g, 0);
-    return Math.max(0, Math.min(GMAX[grp] - others, avail(id)));
+    return Math.max(0, Math.min(GMAX[grp] - others, avail(id, cDt.key)));
   };
-  const limitMsg = (id, m) => (avail(id) <= 0 ? `Agotado hoy: ${ING[id].short}.` : m >= avail(id) ? `Solo quedan ${avail(id)} g de ${ING[id].short}.` : `Máximo ${GMAX[GROUP[id]]} g de ${GNAME[GROUP[id]]} (150 g adicionales).`);
+  const limitMsg = (id, m) => (avail(id, cDt.key) <= 0 ? `Agotado para el ${cDt.label}: ${ING[id].short}.` : m >= avail(id, cDt.key) ? `Solo quedan ${avail(id, cDt.key)} g de ${ING[id].short} para el ${cDt.label}.` : `Máximo ${GMAX[GROUP[id]]} g de ${GNAME[GROUP[id]]} (150 g adicionales).`);
   const kM = pt.p * 4 + pt.c * 4 + pt.g * 9;
   const shares = kM > 0 ? { p: (pt.p * 4 / kM) * 100, c: (pt.c * 4 / kM) * 100, g: (pt.g * 9 / kM) * 100 } : { p: dist.p, c: dist.c, g: dist.g };
   const addIng = () => {
@@ -649,7 +655,7 @@ function App() {
       const r = lunchDate(i.dayIdx, i.mode); if (!r.ok || r.key !== i.date) out.push(`${i.name} (${i.dateLabel}) ya no está disponible para esa fecha.`);
     });
     if (mismoInCart > stock) out.push(`Solo quedan ${stock} platos para hoy.`);
-    Object.keys(inv).forEach((k) => { if (usedInCart(k) > inv[k]) out.push(k in ING ? `No hay suficiente ${ING[k].short} para tu pedido.` : 'Un complemento de tu pedido ya no tiene stock suficiente.'); });
+    cartDates.forEach((dk) => { const iv = invFor(dk); const lb = (cart.find((i) => i.date === dk) || {}).dateLabel; Object.keys(iv).forEach((k) => { if (usedInCart(k, cart, dk) > iv[k]) out.push(k in ING ? `No hay suficiente ${ING[k].short} para el ${lb}.` : `Un complemento del ${lb} ya no tiene stock suficiente.`); }); });
     if (slot !== null && slotPast(slot)) out.push('La franja elegida ya pasó. Elige otra.');
     return out;
   })();
@@ -659,7 +665,7 @@ function App() {
     const modes = [...new Set(cart.filter((i) => i.mode).map((i) => MODES[i.mode].name))];
     setTicket({ code: 'BS-' + Math.random().toString(36).slice(2, 8).toUpperCase(), pin: String(Math.floor(1000 + Math.random() * 9000)), items: cart.map((i) => ({ ...i, unit: unitPrice(i) })), nut: cartNut, total: cartTotal, slot, pay, modes, name: form.name.trim() });
     setStock((s) => Math.max(0, s - mismoInCart));
-    setInv((v) => { const nv = { ...v }; Object.keys(nv).forEach((k) => { nv[k] = Math.max(0, nv[k] - usedInCart(k)); }); return nv; });
+    setInvByDate((v) => { const nv = { ...v }; cartDates.forEach((dk) => { const iv = { ...invFor(dk) }; Object.keys(iv).forEach((k) => { iv[k] = Math.max(0, iv[k] - usedInCart(k, cart, dk)); }); nv[dk] = iv; }); return nv; });
     setCart([]);
   };
 
@@ -699,7 +705,7 @@ function App() {
 
   const bebidaCard = (() => {
     const b = BEB[day];
-    const left = avail('beb' + day);
+    const left = avail('beb' + day, lunchDate(day, mode).key);
     return (
       <section className="rounded-3xl overflow-hidden grid sm:grid-cols-[200px_1fr] items-stretch" style={{ background: 'var(--mos-soft)', border: '1px solid var(--mos)' }} aria-label="Bebida natural del día">
         <DishPhoto line="bebida" idx={day} name={b.n} style={{ minHeight: 170, height: '100%' }} />
@@ -716,7 +722,7 @@ function App() {
 
   const menuItem = (it) => {
     const n = { k: it.k, p: it.p, c: it.c, g: gOf(it), f: it.f };
-    const left = avail(it.id);
+    const left = avail(it.id, extraDate(day).key);
     return (
       <article key={it.id} className="card dish overflow-hidden flex flex-col">
         <div className="relative"><DishPhoto line={it.line} idx={Number(it.id.slice(1)) - 1} name={it.n} style={{ aspectRatio: '4 / 3' }} />
@@ -839,7 +845,7 @@ function App() {
                   <div className="card p-4"><div className="flex justify-between gap-2"><h3 className="font-bold">Elige tu proteína</h3><span className="chip chip-g">Premium +{S(SUP.swap)}</span></div>
                     <div className="grid gap-2 mt-3" role="radiogroup">{['pollo', 'pescado', 'res'].map((k) => {
                       const extra = PREMIUM[k] && !PREMIUM[d.prot] ? SUP.swap : 0;
-                      const off = k !== d.prot && avail(k) < STD_PROT_G * dish.qty;
+                      const off = k !== d.prot && avail(k, dt.key) < STD_PROT_G * dish.qty;
                       return (
                         <button key={k} role="radio" aria-checked={dish.cfg.prot === k} disabled={off} onClick={() => setCfg({ prot: k })} className={'soft p-2.5 text-left text-sm font-semibold flex items-center gap-3 ' + (dish.cfg.prot === k ? 'sel' : '')} style={off ? { opacity: 0.5, cursor: 'not-allowed' } : null}>
                           <IngIcon k={k} /><span className="flex-1">{ING[k].n}{k === d.prot && <span className="muted font-normal"> · de la receta</span>}</span>
@@ -868,8 +874,8 @@ function App() {
                 <div className="flex justify-between items-baseline"><h3 className="font-bold">Desea agregar extras</h3><span className="text-sm font-semibold" style={{ color: 'var(--danger)' }}>(Opcional)</span></div>
                 <div className="grid gap-2 mt-3">{EXTRAS_BY_LINE[line].map((id) => {
                   const e = extraInfo(id, dish.idx, dc.prot); const q = dish.cfg.extras[id] || 0; const mx = e.max; const set = (v) => setCfg({ extras: { ...dish.cfg.extras, [id]: clamp(v, 0, mx) } });
-                  const left = avail(e.inv) - ((dc.use[e.inv] || 0) - e.unit * q) * dish.qty; const canMore = q < mx && left >= e.unit * (q + 1) * dish.qty;
-                  const msg = left < e.unit * dish.qty && !q ? 'Agotado hoy' : q >= mx && e.kind === 'porc' ? 'Máximo 150 g adicionales' : !canMore && q < mx ? 'No hay más stock disponible' : '';
+                  const left = avail(e.inv, dt.key) - ((dc.use[e.inv] || 0) - e.unit * q) * dish.qty; const canMore = q < mx && left >= e.unit * (q + 1) * dish.qty;
+                  const msg = left < e.unit * dish.qty && !q ? 'Agotado para esta fecha' : q >= mx && e.kind === 'porc' ? 'Máximo 150 g adicionales' : !canMore && q < mx ? 'No hay más stock disponible' : '';
                   return (
                     <div key={id} className={'soft p-3 flex items-center justify-between gap-3 ' + (q ? 'sel' : '')} style={id === 'bebida' && !q ? { background: 'var(--mos-soft)' } : null}>
                       <IngIcon k={e.icon} src={id === 'bebida' ? `img/bebida-${dish.idx + 1}.jpg` : null} size={44} />
@@ -1059,7 +1065,7 @@ function App() {
       <section className="card p-5 md:p-6">
         <div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="display text-xl font-bold">Armador por gramos</h3><p className="text-sm muted">Eliges el ingrediente y los gramos exactos.</p></div>{example && <span className="chip chip-m">Plato de ejemplo, edítalo</span>}</div>
         <div className="flex flex-wrap gap-2 mt-4" role="tablist">{Object.entries(CATS).map(([k, v]) => <button key={k} role="tab" aria-selected={pickCat === k} className="tab" onClick={() => { setPickCat(k); setPickId(Object.values(ING).find((i) => i.cat === k).id); }}>{v.name}</button>)}</div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3">{Object.values(ING).filter((i) => i.cat === pickCat).map((i) => { const out = avail(i.id) <= 0; return <button key={i.id} disabled={out} onClick={() => setPickId(i.id)} aria-pressed={pickId === i.id} className={'soft p-2.5 text-left flex items-center gap-3 ' + (pickId === i.id ? 'sel' : '')} style={out ? { opacity: 0.5, cursor: 'not-allowed' } : null}><IngIcon k={i.id} size={44} /><div className="min-w-0"><div className="font-semibold text-sm">{i.n}{PREMIUM[i.id] && <span className="chip chip-p ml-1.5 !py-0">premium</span>}{out && <span className="chip ml-1.5 !py-0" style={{ color: 'var(--danger)' }}>Agotado</span>}</div><div className="text-xs muted num">{i.k} kcal · P {i.p} · C {i.c} · G {i.g} /100 g</div></div></button>; })}</div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3">{Object.values(ING).filter((i) => i.cat === pickCat).map((i) => { const out = avail(i.id, cDt.key) <= 0; return <button key={i.id} disabled={out} onClick={() => setPickId(i.id)} aria-pressed={pickId === i.id} className={'soft p-2.5 text-left flex items-center gap-3 ' + (pickId === i.id ? 'sel' : '')} style={out ? { opacity: 0.5, cursor: 'not-allowed' } : null}><IngIcon k={i.id} size={44} /><div className="min-w-0"><div className="font-semibold text-sm">{i.n}{PREMIUM[i.id] && <span className="chip chip-p ml-1.5 !py-0">premium</span>}{out && <span className="chip ml-1.5 !py-0" style={{ color: 'var(--danger)' }}>Agotado</span>}</div><div className="text-xs muted num">{i.k} kcal · P {i.p} · C {i.c} · G {i.g} /100 g</div></div></button>; })}</div>
         <div className="flex flex-wrap items-end gap-3 mt-4">
           <div style={{ width: 130 }}><label htmlFor="pick-g" className="lbl">Gramos</label><input id="pick-g" type="number" min="1" max="1000" className="inp mt-1 num" value={pickG} onChange={(e) => setPickG(e.target.value)} onFocus={(e) => e.target.select()} /></div>
           <div className="text-sm muted num pb-2">{cur.n}: <b style={{ color: 'var(--fg)' }}>{r0(cur.k * (Number(pickG) || 0) / 100)} kcal</b> · {r1(cur.p * (Number(pickG) || 0) / 100)} g P</div>
