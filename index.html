@@ -694,9 +694,7 @@ function App() {
 
   const bebidaCard = (() => {
     const b = BEB[day];
-    const lunch = cart.find((i) => i.fixed == null && i.dayIdx === day);
     const left = avail('beb' + day);
-    const why = left < 1 ? 'Agotada por hoy.' : !lunch ? `Se agrega junto con un almuerzo del ${DAYS[day].toLowerCase()}. Agrega primero tu almuerzo.` : '';
     return (
       <section className="rounded-3xl overflow-hidden grid sm:grid-cols-[200px_1fr] items-stretch" style={{ background: 'var(--mos-soft)', border: '1px solid var(--mos)' }} aria-label="Bebida natural del día">
         <DishPhoto line="bebida" idx={day} name={b.n} style={{ minHeight: 170, height: '100%' }} />
@@ -705,8 +703,7 @@ function App() {
           <h3 className="display text-xl font-bold leading-tight">{b.n}</h3>
           <p className="text-sm muted">{b.d}</p>
           <div className="mt-auto flex items-center justify-between gap-3 flex-wrap"><div className="display text-2xl font-extrabold num" style={{ color: 'var(--pri)' }}>+ {S(BEB_PRICE)}</div>
-            <button className="btn btn-p" disabled={!!why} onClick={() => addFixed('beb' + day, 'bebida', 'Bebida del Día (350 ml): ' + b.n, BEB_PRICE, { k: b.k, p: 0, c: b.c, g: 0, f: 0 }, { ok: true, key: lunch.date, label: lunch.dateLabel, isToday: lunch.isToday })}><Icon n="plus" size={16} />Agregar por {S(BEB_PRICE)}</button></div>
-          {why && <p className="text-xs muted">{why}</p>}
+            <span className="text-sm muted">{left < 1 ? 'Agotada por hoy.' : 'Agrégala como extra al personalizar tu plato.'}</span></div>
         </div>
       </section>
     );
