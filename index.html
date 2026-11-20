@@ -516,7 +516,7 @@ function App() {
   const [drawer, setDrawer] = useState(false);
   const [dish, setDish] = useState(null); // {line, idx, cfg, qty}
   const [toast, setToast] = useState('');
-  const [form, setForm] = useState({ name: '', ucode: '', phone: '' });
+  const [form, setForm] = useState({ name: '', phone: '' });
   const [slot, setSlot] = useState(null);
   const [pay, setPay] = useState('yape');
   const [touched, setTouched] = useState(false);
@@ -629,7 +629,6 @@ function App() {
   /* ---- checkout ---- */
   const errs = {
     name: form.name.trim().length < 3 ? 'Escribe tu nombre completo.' : '',
-    ucode: !/^\d{8,9}$/.test(form.ucode) ? 'El código UTEC tiene 8 o 9 dígitos.' : '',
     phone: !/^9\d{8}$/.test(form.phone) ? 'Ingresa un WhatsApp de 9 dígitos que empiece con 9.' : '',
     slot: slot === null ? 'Elige una franja de recojo.' : '',
   };
@@ -648,11 +647,11 @@ function App() {
     if (slot !== null && slotPast(slot)) out.push('La franja elegida ya pasó. Elige otra.');
     return out;
   })();
-  const formOk = !errs.name && !errs.ucode && !errs.phone && !errs.slot && !stockErrs.length;
+  const formOk = !errs.name && !errs.phone && !errs.slot && !stockErrs.length;
   const confirmOrder = () => {
     setTouched(true); if (!formOk || !cart.length) return;
     const modes = [...new Set(cart.filter((i) => i.mode).map((i) => MODES[i.mode].name))];
-    setTicket({ code: 'BS-' + Math.random().toString(36).slice(2, 8).toUpperCase(), pin: String(Math.floor(1000 + Math.random() * 9000)), items: cart.map((i) => ({ ...i, unit: unitPrice(i) })), nut: cartNut, total: cartTotal, slot, pay, modes, name: form.name.trim(), ucode: form.ucode });
+    setTicket({ code: 'BS-' + Math.random().toString(36).slice(2, 8).toUpperCase(), pin: String(Math.floor(1000 + Math.random() * 9000)), items: cart.map((i) => ({ ...i, unit: unitPrice(i) })), nut: cartNut, total: cartTotal, slot, pay, modes, name: form.name.trim() });
     setStock((s) => Math.max(0, s - mismoInCart));
     setInv((v) => { const nv = { ...v }; Object.keys(nv).forEach((k) => { nv[k] = Math.max(0, nv[k] - usedInCart(k)); }); return nv; });
     setCart([]);
@@ -950,7 +949,7 @@ function App() {
             <div className="min-w-0">
               <span className="chip chip-g"><Icon n="check" size={13} />Pase QR de recojo</span>
               <h2 className="display text-3xl font-extrabold mt-2">¡Listo, {ticket.name.split(' ')[0]}!</h2>
-              <p className="muted text-sm">UTEC {ticket.ucode} · {ticket.modes.length ? ticket.modes.join(' + ') : 'Snacks y postres'}</p>
+              <p className="muted text-sm">{ticket.modes.length ? ticket.modes.join(' + ') : 'Snacks y postres'}</p>
               <p className="mt-2 flex items-start gap-2"><span style={{ color: 'var(--pri)' }}><Icon n="pin" size={18} /></span><span>Presenta este QR o tu PIN en el <b>Módulo Piso 1 UTEC</b>, franja <b>{SLOTS[ticket.slot]}</b>, el <b>{[...new Set(ticket.items.map((i) => i.dateLabel))].join(', ')}</b>. Te entregamos en menos de 1 minuto.</span></p>
               {ticket.pay === 'efectivo' && <p className="chip chip-m mt-2">Pagas en efectivo en el punto. Tu plato se reserva máximo 10 minutos.</p>}
               <ul className="mt-3 text-sm flex flex-col gap-1">{ticket.items.map((i) => <li key={i.uid} className="flex justify-between gap-3"><span>{i.qty} × {i.name} <span className="muted">· {i.dateLabel}</span>{i.notes.length ? <span className="muted"> ({i.notes.join(', ')})</span> : null}</span><b className="num">{S(i.unit * i.qty)}</b></li>)}</ul>
@@ -974,7 +973,6 @@ function App() {
               {touched && errs.slot && <p className="text-xs mt-2" style={{ color: 'var(--danger)' }}>{errs.slot}</p>}</section>
             <section className="card p-5 grid sm:grid-cols-2 gap-4"><h3 className="font-bold sm:col-span-2">2. Tus datos</h3>
               <div className="sm:col-span-2"><label htmlFor="f-name" className="text-sm font-semibold">Nombre completo</label><input id="f-name" className="inp mt-1" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />{touched && errs.name && <p className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{errs.name}</p>}</div>
-              <div><label htmlFor="f-code" className="text-sm font-semibold">Código UTEC</label><input id="f-code" inputMode="numeric" className="inp mt-1 num" placeholder="202310123" value={form.ucode} onChange={(e) => setForm({ ...form, ucode: e.target.value.replace(/\D/g, '').slice(0, 9) })} />{touched && errs.ucode && <p className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{errs.ucode}</p>}</div>
               <div><label htmlFor="f-phone" className="text-sm font-semibold">WhatsApp</label><input id="f-phone" inputMode="numeric" className="inp mt-1 num" placeholder="987654321" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 9) })} />{touched && errs.phone && <p className="text-xs mt-1" style={{ color: 'var(--danger)' }}>{errs.phone}</p>}</div></section>
             <section className="card p-5"><h3 className="font-bold mb-3">3. Medio de pago</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">{[['yape', 'Yape'], ['plin', 'Plin'], ['tarjeta', 'Tarjeta'], ['efectivo', 'Efectivo en punto']].map(([k, n]) => { const off = k === 'efectivo' && !efectivoOk; return <button key={k} disabled={off} aria-pressed={pay === k} onClick={() => setPay(k)} className={'soft p-3 text-sm font-semibold ' + (pay === k ? 'sel' : '')} style={off ? { opacity: 0.45, cursor: 'not-allowed' } : null}>{n}{off && <div className="text-[10px] muted font-normal">solo mismo día</div>}</button>; })}</div>
