@@ -996,7 +996,7 @@ function App() {
     <div className="pop py-8 flex flex-col gap-6">
       <div><span className="chip chip-m"><Icon n="calc" size={13} />Línea personalizada</span><h2 className="display text-3xl md:text-4xl font-extrabold mt-2">Arma tu almuerzo por macros</h2><p className="muted">Calculadora TDEE (Gasto Energético Total Diario). Tu almuerzo debe aportar el 35% de tu meta del día.</p><p className="text-xs muted mt-1">Valores nutricionales estimados con fines referenciales. No reemplazan una evaluación nutricional individual.</p></div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {kpi('TMB base', r0(tmb).toLocaleString('es-PE'), 'kcal/día', 'Mifflin-St Jeor, en reposo')}
+        {kpi('TMB base', r0(tmb).toLocaleString('es-PE'), 'kcal/día', 'Mifflin-St Jeor (método recomendado para calcular la Tasa Metabólica Basal)')}
         {kpi('TDEE mantenimiento', r0(tdee).toLocaleString('es-PE'), 'kcal/día', `TMB × ${act}`)}
         {kpi('Meta calórica diaria', r0(meta).toLocaleString('es-PE'), 'kcal/día', `TDEE × (1 ${adj >= 0 ? '+' : '−'} ${Math.abs(adj)}%)`)}
         <div className="card p-5" style={{ borderColor: 'var(--pri)' }}><div className="lbl">Meta de tu almuerzo (35%) vs plato armado</div>
