@@ -71,6 +71,18 @@ td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:14px}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes slide{from{transform:translateX(100%)}to{transform:none}}
 .pop{animation:pop .25s ease-out}
+/* Hero: foto del plato a la derecha que se desvanece hacia el fondo crema a la izquierda */
+.hero{position:relative;overflow:hidden;border-radius:24px;border:1px solid var(--line);background:var(--bg);min-height:400px;display:flex;align-items:center}
+.hero-img{position:absolute;top:0;right:0;width:68%;height:100%;object-fit:cover;object-position:center}
+.hero-fade{position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 0%,var(--bg) 34%,color-mix(in srgb,var(--bg) 82%,transparent) 44%,color-mix(in srgb,var(--bg) 25%,transparent) 62%,transparent 78%)}
+.hero-inner{position:relative;max-width:540px;padding:48px 40px}
+.hero-hl{color:var(--pri);font-weight:600;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+@media (max-width:767px){
+  .hero{display:block;min-height:0}
+  .hero-img{position:relative;width:100%;height:220px}
+  .hero-fade{background:linear-gradient(180deg,transparent 0,transparent 140px,var(--bg) 220px)}
+  .hero-inner{padding:0 20px 28px;margin-top:-28px;max-width:none}
+}
 .slide{animation:slide .25s ease-out}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -643,12 +655,12 @@ function App() {
           <svg width="42" height="42" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="var(--pri)" /><circle cx="20" cy="20" r="16" fill="none" stroke="var(--mos)" strokeWidth="1.5" /><text x="20" y="25.5" textAnchor="middle" fontSize="16" fontWeight="800" fill="var(--pri-fg)" fontFamily="var(--font-display)">4B</text></svg>
           <span className="leading-tight"><span className="display block text-xl font-extrabold">Bien Servido</span><span className="block text-[11px] muted">Nuestra comida es rica, barata, buena y bastante</span></span>
         </button>
-        <nav className="flex gap-2 ml-auto lg:ml-6 order-3 lg:order-2 w-full lg:w-auto overflow-x-auto" aria-label="Secciones">
-          <button className="tab" aria-selected={view === 'carta'} onClick={() => setView('carta')}>🍽️ Platos Principales (Lun - Vie)</button>
-          <button className="tab" aria-selected={view === 'extras'} onClick={() => setView('extras')}>🥤 Snacks &amp; Postres Saludables</button>
-          <button className="tab tab-hot" aria-selected={view === 'calc'} onClick={() => setView('calc')}>🧮 Arma tu Plato por Macros (Calculadora TDEE)</button>
+        <nav className="flex gap-2 order-3 w-full overflow-x-auto" aria-label="Secciones">
+          <button className="tab" aria-selected={view === 'carta'} onClick={() => setView('carta')}>🍽️ Platos Principales</button>
+          <button className="tab" aria-selected={view === 'extras'} onClick={() => setView('extras')}>🥤 Snacks &amp; Postres</button>
+          <button className="tab tab-hot" aria-selected={view === 'calc'} onClick={() => setView('calc')}>🧮 Calculadora TDEE</button>
         </nav>
-        <button className="btn btn-p order-2 lg:order-3 lg:ml-auto" onClick={() => setDrawer(true)} aria-label={`Abrir carrito, ${cartCount} platos`}>
+        <button className="btn btn-p order-2 ml-auto" onClick={() => setDrawer(true)} aria-label={`Abrir carrito, ${cartCount} platos`}>
           <Icon n="bag" />Carrito<span className="chip num" style={{ background: 'var(--pri-fg)', color: 'var(--pri)' }}>{cartCount}</span>{cartCount > 0 && <span className="num">{S(cartTotal)}</span>}
         </button>
       </div>
@@ -657,7 +669,6 @@ function App() {
 
   const modeBar = (
     <div>
-      <p className="text-sm muted mb-2">Tarifas: el precio se asigna automáticamente según el día que elijas en el calendario.</p>
       <div className="grid md:grid-cols-2 gap-3" aria-label="Tarifas por tipo de pedido">
         {Object.entries(MODES).map(([k, v]) => (
           <div key={k} className="card p-4">
@@ -724,11 +735,16 @@ function App() {
 
   const carta = (
     <div className="pop pb-10">
-      <section className="py-8">
-        <h1 className="display text-4xl md:text-5xl font-extrabold leading-[1.05] max-w-3xl">Comida casera, saludable y contundente.</h1>
-        <p className="muted mt-3 max-w-2xl text-[17px]">Calientes, con porciones medidas y pensados para la comunidad de UTEC. Pides aquí y recoges en el Piso 1 de UTEC, de 11:00 a.m. a 6:00 p.m., sin colas.</p>
-        <div className="mt-6">{modeBar}</div>
+      <section className="hero mt-5" aria-label="Bien Servido">
+        <img src="img/criollo-5.jpg" alt="Arroz con pollo integral servido en plato" className="hero-img" />
+        <div className="hero-fade" />
+        <div className="hero-inner">
+          <h1 className="display text-4xl md:text-5xl font-extrabold leading-[1.05]">Comida casera, saludable y contundente.</h1>
+          <p className="muted mt-3 text-[17px]">Calientes, con porciones medidas y pensados para la comunidad de UTEC. Pides aquí y recoges en el Piso 1 de UTEC, de <span className="hero-hl">11:00 a.m. a 6:00 p.m.</span>, sin colas.</p>
+          <p className="text-xs muted mt-4">Tarifas: el precio se asigna automáticamente según el día que elijas en el calendario.</p>
+        </div>
       </section>
+      <section className="py-6">{modeBar}</section>
       <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Día">
         {DAYS.map((d, i) => { const r = lunchDate(i, autoMode(i)); return <button key={d} role="tab" className="tab" aria-selected={day === i} onClick={() => setDay(i)} style={r.ok ? null : { opacity: 0.55 }}>{r.ok ? r.label : d}{r.ok && r.isToday ? ' · hoy' : ''}</button>; })}
       </div>
